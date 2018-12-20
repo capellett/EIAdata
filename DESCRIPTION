@@ -1,11 +1,10 @@
 Package: EIAdata
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Some Data from the United States Energy Information Administration
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Author: C A Pellett
+Maintainer: <pellettc@dnr.sc.gov>
+Description: Some data from the US EIA. 
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
