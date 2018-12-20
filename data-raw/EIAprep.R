@@ -15,7 +15,7 @@ library(zoo)
 ## MFProp04 has info regarding proposed multi-fuel plants
 ## PCGenY04 has info regarding proposed changes to existing plants
 ## OwnerY04 has info regarding generators that are owned by someone other than the operator.
-## Layout describes the other workbooks. 
+## Layout describes the other workbooks.
 ## Each workbook aside from Layout is a single worksheet.
 
 ## 2005 - 2006 : same files as 2004, plus Intcon05, which has data on new interconnection costs.
@@ -36,22 +36,22 @@ library(zoo)
 
 for(i in 2013:2017) {
   folder <- paste0('Energy Information Administration\\form 860\\eia860', i, '\\')
-  
-  utility <- read_xlsx(paste0(folder, '1___Utility_Y', i,'.xlsx'), 
+
+  utility <- read_xlsx(paste0(folder, '1___Utility_Y', i,'.xlsx'),
                        sheet=1, skip=1)
   utility$Year <- i
   assign(paste0('utility', i), utility)
-  
-  plant <- read_xlsx(paste0(folder, '2___Plant_Y', i, '.xlsx'), 
+
+  plant <- read_xlsx(paste0(folder, '2___Plant_Y', i, '.xlsx'),
                      sheet=1, skip=1, guess_max=5000)
   plant$Year <- i
   assign(paste0('plant', i), plant)
-  
-  generator <- read_xlsx(paste0(folder, '3_1_Generator_Y', i, '.xlsx'), 
+
+  generator <- read_xlsx(paste0(folder, '3_1_Generator_Y', i, '.xlsx'),
                          sheet=1, skip=1, guess_max=10000)
   generator$Year <- i
   assign(paste0('generator', i), generator)
-  
+
   rm(utility, plant, generator, folder, i)
 }
 
@@ -59,38 +59,38 @@ names(utility2013) <- names(utility2016)
 names(utility2014) <- names(utility2016)
 names(utility2015) <- names(utility2016)
 utility2017 <- select(utility2017, -Caution)
-utility <- bind_rows(utility2013, utility2014, utility2015, utility2016, utility2017)
+utilities <- bind_rows(utility2013, utility2014, utility2015, utility2016, utility2017)
 rm(utility2013, utility2014, utility2015, utility2016, utility2017)
 
 plant2017 <- select(plant2017, -Caution)
-plant <- bind_rows(plant2013, plant2014, plant2015, plant2016, plant2017)
+plants <- bind_rows(plant2013, plant2014, plant2015, plant2016, plant2017)
 rm(plant2013, plant2014, plant2015, plant2016, plant2017)
 
 generator2017 <- select(generator2017, -Caution)
-generator <- bind_rows(generator2013, generator2014, 
+generators <- bind_rows(generator2013, generator2014,
                            generator2015, generator2016, generator2017)
 rm(generator2013, generator2014, generator2015, generator2016, generator2017)
 
 # for(i in 2013:2016) {
 #   folder <- paste0('form 860\\eia860', i, '\\')
-#   
-#   EnviroAssoc <- read_xlsx(paste0(folder, '6_1_EnviroAssoc_Y', i,'.xlsx'), 
+#
+#   EnviroAssoc <- read_xlsx(paste0(folder, '6_1_EnviroAssoc_Y', i,'.xlsx'),
 #                        sheet=1, skip=1)
 #   EnviroAssoc$Year <- i
 #   assign(paste0('EnviroAssoc', i), EnviroAssoc)
-#   
-#   EnviroEquip <- read_xlsx(paste0(folder, '6_2_EnviroEquip_Y', i, '.xlsx'), 
+#
+#   EnviroEquip <- read_xlsx(paste0(folder, '6_2_EnviroEquip_Y', i, '.xlsx'),
 #                      sheet=1, skip=1)
 #   EnviroEquip$Year <- i
 #   assign(paste0('EnviroEquip', i), EnviroEquip)
-#   
+#
 #   rm(EnviroAssoc, EnviroEquip, folder, i)
 # }
-# 
+#
 # EnviroAssoc2013_2016 <- bind_rows(
 #   EnviroAssoc2013, EnviroAssoc2014, EnviroAssoc2015, EnviroAssoc2016)
 # rm(EnviroAssoc2013, EnviroAssoc2014, EnviroAssoc2015, EnviroAssoc2016)
-# 
+#
 # EnviroEquip2013_2016 <- bind_rows(
 #   EnviroEquip2013, EnviroEquip2014, EnviroEquip2015, EnviroEquip2016)
 # rm(EnviroEquip2013, EnviroEquip2014, EnviroEquip2015, EnviroEquip2016)
@@ -102,26 +102,26 @@ rm(generator2013, generator2014, generator2015, generator2016, generator2017)
 ## (manually). So, could be good to write a function to read in all the sheets...
 for(i in  2012:2017) {
   netGen <- read_xlsx(
-    'Energy Information Administration\\f923_Page4_Generators.xlsx', 
+    'Energy Information Administration\\f923_Page4_Generators.xlsx',
     sheet=as.character(i), skip=5, guess_max=10000)
   names(netGen) <- c(
     'PlantID', 'Combined Heat and Power', 'Plant', 'Operator', 'OperatorID',
-    'State', 'CensusRegion', 'NERCRegion', 'NAICS', 'SectorNumber', 'Sector', 
-    'GeneratorID', 'PrimeMover', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+    'State', 'CensusRegion', 'NERCRegion', 'NAICS', 'SectorNumber', 'Sector',
+    'GeneratorID', 'PrimeMover', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
     'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'YearToDate', 'Year')
   assign(paste0('netGen', i), netGen)
 
   cooling <- read_xlsx(
-    'Energy Information Administration\\f923_Schedule8_Cooling.xlsx', 
+    'Energy Information Administration\\f923_Schedule8_Cooling.xlsx',
     sheet=as.character(i), skip=4, guess_max=10000)
   names(cooling) <- c(
     'Year', 'Month', 'PlantID', 'CoolingID', 'CoolingType', 'CoolingStatus', 'HoursInService',
-    'Chlorine (thousand lbs)', 'Diversion (gpm)', 'Withdrawal (gpm)', 'Discharge (gpm)', 
-    'Consumption (gpm)', 'FlowMethod', 'IntakeAvgTemp (F)', 'IntakeMaxTemp', 'DischargeAvgTemp', 
-    'DischargeMaxTemp', 'TempMethod', 'Diversion (MGal)', 'Withdrawal (MGal)', 'Discharge (MGal)', 
+    'Chlorine (thousand lbs)', 'Diversion (gpm)', 'Withdrawal (gpm)', 'Discharge (gpm)',
+    'Consumption (gpm)', 'FlowMethod', 'IntakeAvgTemp (F)', 'IntakeMaxTemp', 'DischargeAvgTemp',
+    'DischargeMaxTemp', 'TempMethod', 'Diversion (MGal)', 'Withdrawal (MGal)', 'Discharge (MGal)',
     'Consumption (MGal)')
   assign(paste0('cooling', i), cooling)
-  
+
   rm(netGen, cooling, i)
 }
 
@@ -133,8 +133,8 @@ rm(cooling2012, cooling2013, cooling2014,
    cooling2015, cooling2016, cooling2017)
 
 
-### f923_Page4_Generators 
-netGen <- bind_rows(netGen2012, netGen2013, netGen2014,
+### f923_Page4_Generators
+net_generation <- bind_rows(netGen2012, netGen2013, netGen2014,
                     netGen2015, netGen2016, netGen2017)
 rm(netGen2012, netGen2013, netGen2014,
    netGen2015, netGen2016, netGen2017)
@@ -159,26 +159,19 @@ cj16 <- read_xlsx('Energy Information Administration\\cooling_detail.xlsx',
   mutate(`Other Gas Consumption (MMBTU)` = as.numeric(`Other Gas Consumption (MMBTU)`),
          `Steam Plant Type`=as.numeric(`Steam Plant Type`))
 
-cj17 <- read_xlsx('Energy Information Administration\\cooling_detail_2017.xlsx', 
+cj17 <- read_xlsx('Energy Information Administration\\cooling_detail_2017.xlsx',
                            skip=2, guess_max=10000) %>%
   mutate(Year=as.numeric(Year), Month=as.numeric(Month))
 
 cooling_detail <- bind_rows(cj17, cj16, cj15, cj14)
 rm(cj14, cj15, cj16, cj17)
 
-
-usethis::use_data(generator)
-usethis::use_data(plant)
-usethis::use_data(utility)
+usethis::use_data(utilities)
+usethis::use_data(plants)
+usethis::use_data(generators)
+usethis::use_data(net_generation)
 usethis::use_data(cooling)
-usethis::use_data(netGen)
 usethis::use_data(cooling_detail)
 
-# generator <- readRDS('Energy Information Administration\\eia_generator_2013-2017.rds')
-# plant <- readRDS('Energy Information Administration\\eia_plant_2013-2017.rds')
-# utility <- readRDS('Energy Information Administration\\eia_utility_2013-2017.rds')
-# cooling <- readRDS('Energy Information Administration\\eia_cooling_2012-2017.rds')
-# netGen <- readRDS('Energy Information Administration\\eia_netGen_2012-2017.rds')
-# cooling_detail <- readRDS('Energy Information Administration\\cooling_detail.rds')
-# 
+
 
