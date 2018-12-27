@@ -3,7 +3,7 @@ Type: Package
 Title: Some Datasets from the United States Energy Information Administration
 Version: 0.1.0
 Author: C A Pellett
-Maintainer: <pellettc@dnr.sc.gov>
+Maintainer: <c.alex.pellett@gmail.com>
 Description: Some datasets from the US EIA. 
 License: file LICENSE
 Encoding: UTF-8
@@ -11,5 +11,6 @@ LazyData: true
 RoxygenNote: 6.1.1
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat
 VignetteBuilder: knitr
