@@ -1,4 +1,10 @@
-###
+#' @export
+#' @title Convert (and drop) month and year columns to a data column
+#' @description
+#' @param df a dataframe with a column for month and a column for year.
+#' @param monthcol length 1 character vector name of the month column.
+#' @param yearcol length 1 character vector name of the year column.
+#' @param datecol length 1 character vector name of the year column.
 monthyear_to_date <- function(df, monthcol='Month', yearcol='Year', datecol='Date') {
   months <- df[,monthcol, drop=TRUE]
   months[is.na(months)] <- 12
@@ -11,7 +17,13 @@ monthyear_to_date <- function(df, monthcol='Month', yearcol='Year', datecol='Dat
 
 # test <- monthyear_to_date(eia_generator, 'Operating Month', 'Operating Year', 'Operating Date')
 
-###
+#' @export
+#' @title left join two dataframes, dropping extra copied columns
+#' @description
+#' @param df1 a dataframe
+#' @param df2 a dataframe
+#' @param by a character vector of variables to join by
+#' @param rename
 join_and_drop <- function(df1, df2, by=NULL, rename=FALSE) {
   df <- left_join(df1, df2, by)
   if(is.null(by)){
@@ -24,6 +36,13 @@ join_and_drop <- function(df1, df2, by=NULL, rename=FALSE) {
   df
 }
 
+#' @export
+#' @title Create a column by pasting multiple columns together
+#' @description
+#' @param df
+#' @param columns
+#' @param new_col
+#' @param collapse
 paste_columns <- function(df, columns, new_col='new_col', collapse='; ') {
   columns <- df[, columns]
   df <- df[, !(names(df) %in% names(columns))]
