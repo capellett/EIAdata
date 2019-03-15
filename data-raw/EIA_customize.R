@@ -177,24 +177,24 @@ cooling_detail <- eia_cooling_detail %>%
          -`Summer Capacity Associated with Single Shaft Combined Cycle Units (MW)`)
 
 
-### I'm not sure the MWh value is working correctly.
 cool <- cooling_detail %>%
-  rename(`Net Steam Generation (MWh)`=`Net Generation from Steam Turbines (MWh)`,
-         `Net CC Generation (MWh)` =
-           `Net Generation Associated with Combined Cycle Gas Turbines (MWh)`,
-         `Net SSCC Generation (MWh)`=
-           `Net Generation Associated with Single Shaft Combined Cycle Units (MWh)`) %>%
-  mutate(`gal/kWh`=`Water Consumption Intensity Rate (Gallons / MWh)`/1000,
-         MWh = sum(`Net Steam Generation (MWh)`,
-                   `Net CC Generation (MWh)`,
-                   `Net SSCC Generation (MWh)`, na.rm=T)) %>%
-  select(State, Utility='Utility Name', Plant='Plant Name', PlantID='Plant Code',
+  rename(Utility='Utility Name', Plant='Plant Name', PlantID='Plant Code',
          Generator='Generator ID', Boiler='Boiler ID', Cooling='Cooling ID',
-         Date, `gal/kWh`, MWh, # ='Net Generation (MWh)',
-         `Net Steam Generation (MWh)`,  `Net CC Generation (MWh)`,
-         `Net SSCC Generation (MWh)`,
-         Withdrawal='Water Withdrawal Volume (Million Gallons)',
-         Consumption='Water Consumption Volume (Million Gallons)',
+         NetSteamGen=`Net Generation from Steam Turbines (MWh)`,
+         NetCCGen =
+           `Net Generation Associated with Combined Cycle Gas Turbines (MWh)`,
+         NetSSCCGen=
+           `Net Generation Associated with Single Shaft Combined Cycle Units (MWh)`,
+         Withdrawal_MGal='Water Withdrawal Volume (Million Gallons)',
+         Consumption_MGal='Water Consumption Volume (Million Gallons)') %>%
+  mutate(`gal/kWh`=`Water Consumption Intensity Rate (Gallons / MWh)`/1000,
+         NetSteamGen=if_else(is.na(NetSteamGen), 0, NetSteamGen),
+         NetCCGen = if_else(is.na(NetCCGen), 0, NetCCGen),
+         NetSSCCGen = if_else(is.na(NetSSCCGen), 0, NetSSCCGen)) %>%
+  mutate(MWh = NetSteamGen + NetCCGen + NetSSCCGen) %>%
+  select(State, Utility, Plant, PlantID, Generator, Boiler, Cooling,
+         Date, `gal/kWh`, MWh, NetSteamGen,  NetCCGen, NetSSCCGen,
+         Withdrawal_MGal, Consumption_MGal,
          `860 Cooling Type 1`, `860 Cooling Type 2`,
          `923 Cooling Type`, `Cooling System Type`)
 
@@ -205,14 +205,14 @@ length_unique_values <- function(x) length(unique(x, incomparables=NA))
 ####### This isn't working right...
 test <- cool %>%
   group_by(Utility, Plant, Cooling, Date) %>%
-  summarise(nWithdrawal = length(unique(Withdrawal, incomparables=NA)),
-            nConsumption = length(unique(Consumption, incomparables=NA)),
+  summarise(nWithdrawal = length(unique(Withdrawal_MGal, incomparables=NA)),
+            nConsumption = length(unique(Consumption_MGal, incomparables=NA)),
             nMWh=length(unique(MWh, incomparables=NA)),
             nBoiler=length(unique(Boiler, incomparables=NA)),
             nGenerator=length(unique(Generator, incomparables=NA)),
-            nSteam=length(unique(round(`Net Steam Generation (MWh)`), incomparables=NA)),
-            nCC=length(unique(round(`Net CC Generation (MWh)`), incomparables=NA)),
-            nSSCC=length(unique(round(`Net SSCC Generation (MWh)`), incomparables=NA)),
+            nSteam=length(unique(round(NetSteamGen), incomparables=NA)),
+            nCC=length(unique(round(NetCCGen), incomparables=NA)),
+            nSSCC=length(unique(round(NetSSCCGen), incomparables=NA)),
             `860 Cooling Type 1`=length(unique(`860 Cooling Type 1`, incomparables=NA)),
             `860 Cooling Type 2`=length(unique(`860 Cooling Type 2`, incomparables=NA)),
             `923 Cooling Type` = length(unique(`923 Cooling Type`, incomparables=NA)),
@@ -225,9 +225,9 @@ coolers <- cool %>%
     summarise(
       Generators = paste0(unique(Generator), collapse=', '),
       Boilers = paste0(unique(Boiler), collapse=', '),
-      Withdrawal = unique(Withdrawal),
-      Consumption = unique(Consumption),
-      MWh=unique(MWh),
+      Withdrawal_MGal = unique(Withdrawal_MGal),
+      Consumption_MGal = unique(Consumption_MGal),
+      MWh=sum(MWh, na.rm=TRUE),
       `860 Cooling Type 1`=unique(`860 Cooling Type 1`),
       `860 Cooling Type 2`=unique(`860 Cooling Type 2`),
       `923 Cooling Type` = unique(`923 Cooling Type`),
@@ -237,9 +237,6 @@ coolers <- cool %>%
 cool_joins <- cool %>%
   select(Utility, PlantID, Generator, Cooling) %>%
   unique()
-
-
-
 
 # nrow(unique(eia_netGen2[c(1,4)])) # 29 plants
 # nrow(unique(eia_netGen2[c(1,4,6)])) # 72 generators
@@ -252,10 +249,7 @@ cool_joins <- cool %>%
 ## Join cool and eia_cooling2 and eia_netGen2 in to a single table?
 
 
-
-
 ## For each plant,
-## Make Rmarkdown datasheets!!!!!
 ## plot generators and cooling systems, colored by cooling system.
 
 ### Title: Utility, Plant, Cooling System
@@ -282,28 +276,32 @@ plot_eia_coolers <- function(plantID, cooling) {
   cooling2 <- unique(cool1$Cooling)
   utility <- unique(cool1$Utility)
   plant <- unique(cool1$Plant)
-  boilers <- unique(cool1$Boilers)
-  generators <- unique(cool1$Generators)
-  title <- paste0(plant, ', Cooling System:', cooling2)
-  subtitle <- paste0('Boilers: ', boilers, '. Generators: ', generators)
+  boilerIDs <- unique(cool1$Boilers)
+  generatorIDs <- unique(cool1$Generators)
+  title <- paste0(utility, ':', plant, ', Cooling System:', cooling2)
+  subtitle <- paste0('Boilers: ', boilerIDs, '. Generators: ', generatorIDs)
 
   graph1 <- ggplot(cool1, aes(x=Date)) +
-    geom_line(aes(y=Withdrawal), color = 'blue') +
-    geom_line(aes(y=Consumption), color='red') +
+    geom_line(aes(y=Withdrawal_MGal), color = 'blue') +
+    geom_line(aes(y=Consumption_MGal), color='red') +
     ggtitle(title, subtitle)
 
   print(graph1)
 
-
   ### graph 2: MWh, total NamePlate capacity, and capacity*power factor over time
-
-  graph2 <- ggplot()
-
-
-
+  gen <- semi_join(generators, cool1,
+                   by=c('State', 'PlantID')) %>%
+    select(Generator, `Nameplate Capacity (MW)`,
+           `Nameplate Power Factor`, `Summer Capacity (MW)`,
+           `Winter Capacity (MW)`, `Minimum Load (MW)`, Status,
+           PlannedAction, PlannedDate) %>%
+    mutate(Capacity = `Nameplate Capacity (MW)`*`Nameplate Power Factor`)
+  print(gen)
+  # graph2 <- ggplot()
 
   graph3 <- ggplot(cool1, aes(x=Date)) +
-    geom_line(aes(y=Consumption/MWh))
+    geom_line(aes(y=Consumption_MGal*1000/(MWh))) +
+    ylab('Consumption Rate (gal/kWh)')
 
   print(graph3)
 }
