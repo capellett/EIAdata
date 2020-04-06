@@ -5,13 +5,14 @@
 #' @param monthcol length 1 character vector name of the month column.
 #' @param yearcol length 1 character vector name of the year column.
 #' @param datecol length 1 character vector name of the year column.
-monthyear_to_date <- function(df, monthcol='Month', yearcol='Year', datecol='Date') {
+monthyear_to_date <- function(df, monthcol='Month', yearcol='Year',
+                              datecol='Date', dateFormat="%m %Y") {
   months <- df[,monthcol, drop=TRUE]
   months[is.na(months)] <- 12
   years <- df[,yearcol, drop=TRUE]
   df[, datecol] <- as_date(as.yearmon(
     paste0(months, ' ', years),
-    format="%m %Y"), frac=1)
+    format=dateFormat), frac=1)
   df[, !(names(df) %in% c(monthcol, yearcol))]
 }
 

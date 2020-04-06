@@ -3,6 +3,7 @@
 library(tidyverse)
 library(lubridate)
 library(zoo)
+library(EIAdatasets)
 
 rm(list=ls())
 
@@ -143,7 +144,7 @@ netGen <- eia_netGen %>% # filter(State=='SC') %>%
   select(PlantID, Plant, Sector, OperatorID, Operator, State, GeneratorID,
          PrimeMover, Jan:Dec, Year) %>%
   gather(key="Month", value="MWh", Jan:Dec) %>%
-  monthyear_to_date() %>%
+  monthyear_to_date(dateFormat='%b %Y') %>%
   join_and_drop(PrimeMovers, by=c('PrimeMover'='Prime Mover'), rename='Prime Mover')
 
 ### --- cooling_detail
@@ -238,10 +239,20 @@ cool_joins <- cool %>%
   select(Utility, PlantID, Generator, Cooling) %>%
   unique()
 
-# nrow(unique(eia_netGen2[c(1,4)])) # 29 plants
-# nrow(unique(eia_netGen2[c(1,4,6)])) # 72 generators
-#
-# nrow(unique(cooling_joins_SC[c(1:2)])) # 20 plants
+netGen_SC <- filter(netGen, State=='SC')
+coolers_SC <- filter(coolers, State=='SC') %>% ungroup()
+generators_SC <- filter(generators, State=='SC')
+plants_SC <- filter(plants, State=='SC')
+
+
+save(netGen_SC, file='netGen_SC.rda')
+save(coolers_SC, file='coolers_SC.rda')
+save(generators_SC, file='generators_SC.rda')
+save(plants_SC, file='plants_SC.rda')
+
+
+unique(netGen_SC[,c(1:5)]) %>% write.csv('')
+unique(coolers_SC[c(1:5, 7, 8, 12:15)])
 # nrow(unique(cooling_joins_SC[1:3])) # 53 generators
 # nrow(unique(cooling_joins_SC[c(1:2, 4)])) # 42 cooling systems
 # nrow(unique(cooling_joins_SC[1:4])) # 65 joins
@@ -269,7 +280,6 @@ cool_joins <- cool %>%
 
 # cool_SC <- filter(cool, State=='SC')
 
-coolers_SC <- filter(coolers, State=='SC') %>% ungroup()
 
 plot_eia_coolers <- function(plantID, cooling) {
   cool1 <- filter(coolers_SC, PlantID==plantID & Cooling==cooling)
