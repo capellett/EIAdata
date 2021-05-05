@@ -168,7 +168,7 @@ cooling_detail <- eia_cooling_detail %>%
                    `Nameplate Capacity (MW)`, `Nameplate Power Factor`,
                    `Summer Capacity (MW)`, `Winter Capacity (MW)`,
                    `Minimum Load (MW)`)) %>%
-  select(-X__1, -X__2, # -State,
+  select(# -State,
          -`Number Operable Generators`, -`Number Operable Boilers`, -`Number Operable Cooling Systems`,
          -`Water Type`, -`Water Source`, -`Water Source Name`, -`Water Discharge Name`,
          -`Other Fuel Consumption (MMBTU)`,

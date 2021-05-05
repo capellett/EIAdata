@@ -4,7 +4,8 @@
 \name{plants}
 \alias{plants}
 \title{Plants}
-\format{A data frame with 45 variables:
+\format{
+A data frame with 45 variables:
 \describe{
 \item{\code{Utility ID}, \code{Utility Name}}{Unique identification codes and names of the electricity utilities.}
 \item{\code{Plant Code}, \code{Plant Name}}{Numeric codes and names of the power plants.}
@@ -44,7 +45,8 @@
 \item{\code{Pipeline Notes}}{desc}
 \item{\code{Natural Gas Storage}}{desc}
 \item{\code{Liquified Natural Gas Storage}}{desc}
-}}
+}
+}
 \usage{
 plants
 }

@@ -4,7 +4,8 @@
 \name{utilities}
 \alias{utilities}
 \title{Utilities}
-\format{A data frame with twelve variables:
+\format{
+A data frame with twelve variables:
 \describe{
 \item{\code{Owner of Plants Reported on Form?}}{}
 \item{\code{Other Relationships with Plants Reported on Form?}}{}
@@ -12,7 +13,8 @@
 \item{\code{Year}}{Year}
 }
 
-For further details, see \url{http://www.ssa.gov/oact/NOTES/as120/LifeTables_Body.html#wp1168594}}
+For further details, see \url{http://www.ssa.gov/oact/NOTES/as120/LifeTables_Body.html#wp1168594}
+}
 \usage{
 utilities
 }

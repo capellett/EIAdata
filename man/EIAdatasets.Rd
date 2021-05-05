@@ -3,7 +3,6 @@
 \docType{package}
 \name{EIAdatasets}
 \alias{EIAdatasets}
-\alias{EIAdatasets-package}
 \title{Some EIA Datasets}
 \description{
 Some datasets from the United States Energy Information Administration.

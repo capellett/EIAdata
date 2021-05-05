@@ -4,13 +4,15 @@
 \name{cooling_detail}
 \alias{cooling_detail}
 \title{Detailed cooling information}
-\format{A data frame with twenty seven variables:
+\format{
+A data frame with twenty seven variables:
 \describe{
 \item{\code{Owner of Plants Reported on Form?}}{}
 \item{\code{Other Relationships with Plants Reported on Form?}}{}
 \item{\code{Entity Type}}{}
 \item{\code{Year}}{Year}
-}}
+}
+}
 \usage{
 cooling_detail
 }

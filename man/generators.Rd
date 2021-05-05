@@ -4,13 +4,15 @@
 \name{generators}
 \alias{generators}
 \title{Generators}
-\format{A data frame with seventy five variables:
+\format{
+A data frame with seventy five variables:
 \describe{
 \item{\code{Owner of Plants Reported on Form?}}{}
 \item{\code{Other Relationships with Plants Reported on Form?}}{}
 \item{\code{Entity Type}}{}
 \item{\code{Year}}{Year}
-}}
+}
+}
 \usage{
 generators
 }

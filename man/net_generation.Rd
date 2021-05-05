@@ -4,13 +4,15 @@
 \name{net_generation}
 \alias{net_generation}
 \title{Net Generation}
-\format{A data frame with twenty seven variables:
+\format{
+A data frame with twenty seven variables:
 \describe{
 \item{\code{Owner of Plants Reported on Form?}}{}
 \item{\code{Other Relationships with Plants Reported on Form?}}{}
 \item{\code{Entity Type}}{}
 \item{\code{Year}}{Year}
-}}
+}
+}
 \usage{
 net_generation
 }
