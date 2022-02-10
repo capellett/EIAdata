@@ -7,16 +7,34 @@
 \format{
 A data frame with twenty two variables:
 \describe{
-\item{\code{Owner of Plants Reported on Form?}}{}
-\item{\code{Other Relationships with Plants Reported on Form?}}{}
-\item{\code{Entity Type}}{}
-\item{\code{Year}}{Year}
+\item{\code{Year}}{}
+\item{\code{Month}}{}
+\item{\code{PlantID}}{}
+\item{\code{CoolingID}}{}
+\item{\code{CoolingType}}{}
+\item{\code{CoolingStatus}}{}
+\item{\code{HoursInService}}{}
+\item{\code{Chlorine (thousand lbs)}}{}
+\item{\code{Diversion (gpm)}}{}
+\item{\code{Withdrawal (gpm)}}{}
+\item{\code{Discharge (gpm)}}{}
+\item{\code{Consumption (gpm)}}{}
+\item{\code{FlowMethod}}{}
+\item{\code{IntakeAvgTemp (F)}}{}
+\item{\code{IntakeMaxTemp}}{}
+\item{\code{DischargeAvgTemp}}{}
+\item{\code{DischargeMaxTemp}}{}
+\item{\code{TempMethod}}{}
+\item{\code{Diversion (MGal)}}{}
+\item{\code{Withdrawal (MGal)}}{}
+\item{\code{Discharge (MGal)}}{}
+\item{\code{Consumption (MGal)}}{}
 }
 }
 \usage{
 cooling
 }
 \description{
-Net monthly electricity generation in MWh over the years 2012-2017.
+Monthly entries for cooling of electricity generation plants over the years 2012-2020.
 }
 \keyword{datasets}

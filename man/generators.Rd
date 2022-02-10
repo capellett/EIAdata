@@ -7,16 +7,77 @@
 \format{
 A data frame with seventy five variables:
 \describe{
-\item{\code{Owner of Plants Reported on Form?}}{}
-\item{\code{Other Relationships with Plants Reported on Form?}}{}
-\item{\code{Entity Type}}{}
+\item{\code{Utility ID}, \code{Utility Name}}{Unique identification codes and names of the electricity utilities.}
+\item{\code{Plant Code}, \code{Plant Name}}{Numeric codes and names of the power plants.}
+\item{\code{State}}{}
+\item{\code{County}}{}
+\item{\code{Generator ID}}{}
+\item{\code{Prime Mover}}{}
+\item{\code{Unit Code}}{}
+\item{\code{Ownership}}{}
+\item{\code{Duct Burners}}{}
+\item{\code{Can Bypass Heat Recovery Steam Generator?}}{}
+\item{\code{RTO/ISO LMP Node Designation}}{}
+\item{\code{RTO/ISO Location Designation for Reporting Wholesale Sales Data to FERC}}{}
+\item{\code{Nameplate Capacity (MW)}}{}
+\item{\code{Nameplate Power Factor}}{}
+\item{\code{Summer Capacity (MW)}}{}
+\item{\code{Winter Capacity (MW)}}{}
+\item{\code{Minimum Load (MW)}}{}
+\item{\code{Uprate or Derate Completed During Year}}{}
+\item{\code{Month Uprate or Derate Completed}}{}
+\item{\code{Year Uprate or Derate Completed}}{}
+\item{\code{Status}}{}
+\item{\code{Synchronized to Transmission Grid}}{}
+\item{\code{Operating Month}}{}
+\item{\code{Operating Year}}{}
+\item{\code{Planned Retirement Month}}{}
+\item{\code{Planned Retirement Year}}{}
+\item{\code{Associated with Combined Heat and Power System}}{}
+\item{\code{Sector Name}}{}
+\item{\code{Sector}}{}
+\item{\code{Topping or Bottoming}}{}
+\item{\code{Energy Source 1, 2, 3, ... 6}}{}
+\item{\code{Startup Source 1, 2, 3, ... 6}}{}
+\item{\code{Solid Fuel Gasification System?}}{}
+\item{\code{Carbon Capture Technology?}}{}
+\item{\code{Turbines, Inverters, or Hydrokinetic Buoys}}{}
+\item{\code{Time from Cold Shutdown to Full Load}}{}
+\item{\code{Fluidized Bed Technology?}}{}
+\item{\code{Pulverized Coal Technology?}}{}
+\item{\code{Stoker Technology?}}{}
+\item{\code{Other Combustion Technology?}}{}
+\item{\code{Subcritical Technology?}}{}
+\item{\code{Supercritical Technology?}}{}
+\item{\code{Ultrasupercritical Technology?}}{}
+\item{\code{Planned Net Summer Capacity Uprate (MW)}}{}
+\item{\code{Planned Net Winter Capacity Uprate (MW)}}{}
+\item{\code{Planned Uprate Month}}{}
+\item{\code{Planned Uprate Year}}{}
+\item{\code{Planned Net Summer Capacity Derate (MW)}}{}
+\item{\code{Planned Net Winter Capacity Derate (MW)}}{}
+\item{\code{Planned Derate Month}}{}
+\item{\code{Planned Derate Year}}{}
+\item{\code{Planned New Prime Mover}}{}
+\item{\code{Planned Energy Source 1}}{}
+\item{\code{Planned New Nameplate Capacity (MW)}}{}
+\item{\code{Planned Repower Month}}{}
+\item{\code{Planned Repower Year}}{}
+\item{\code{Other Planned Modifications?}}{}
+\item{\code{Other Modifications Month}}{}
+\item{\code{Other Modifications Year}}{}
+\item{\code{Cofire Fuels?}}{}
+\item{\code{Switch Between Oil and Natural Gas?}}{}
 \item{\code{Year}}{Year}
+\item{\code{Technology}}{}
+\item{\code{Turbines or Hydrokinetic Buoys}}{}
+\item{\code{Multiple Fuels?}}{}
 }
 }
 \usage{
 generators
 }
 \description{
-Electric power generators in EIA form 860 over the years 2013-2017
+Annual entries for each electric power generators in EIA form 860 over the years 2013-2020
 }
 \keyword{datasets}

@@ -10,7 +10,7 @@ monthyear_to_date <- function(df, monthcol='Month', yearcol='Year',
   months <- df[,monthcol, drop=TRUE]
   months[is.na(months)] <- 12
   years <- df[,yearcol, drop=TRUE]
-  df[, datecol] <- as_date(as.yearmon(
+  df[, datecol] <- lubridate::as_date(zoo::as.yearmon(
     paste0(months, ' ', years),
     format=dateFormat), frac=1)
   df[, !(names(df) %in% c(monthcol, yearcol))]
@@ -26,7 +26,7 @@ monthyear_to_date <- function(df, monthcol='Month', yearcol='Year',
 #' @param by a character vector of variables to join by
 #' @param rename
 join_and_drop <- function(df1, df2, by=NULL, rename=FALSE) {
-  df <- left_join(df1, df2, by)
+  df <- dplyr::left_join(df1, df2, by)
   if(is.null(by)){
     by <- names(df1)[names(df1) %in% names(df2)]
   }

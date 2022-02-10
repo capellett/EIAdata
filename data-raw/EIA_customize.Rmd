@@ -1,0 +1,506 @@
+---
+title: "Customizing the EIA datasets"
+author: "C A Pellett"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+This report documents additional preparation of the EIA datasets for the purpose of water planning in South Carolina. 
+
+```{r}
+library(tidyverse)
+library(lubridate)
+library(zoo)
+library(EIAdatasets)
+```
+
+
+# Generators
+```{r}
+##### Reduce some more columns in the generators table
+## test if modification dates can be gathered into date+type
+test_plans <- EIAdatasets::generators %>%
+  dplyr::filter(Year == 2020) %>%
+  mutate(RetDate = !is.na(`Planned Retirement Date`),
+         UpDate = !is.na(`Planned Uprate Date`),
+         DeDate = !is.na(`Planned Derate Date`),
+         ReDate = !is.na(`Planned Repower Date`),
+         OthDate = !is.na(`Planned Other Modifications Date`)) %>%
+  rowwise() %>%
+  mutate(nPlans = sum(RetDate, UpDate, DeDate, ReDate, OthDate, na.rm=TRUE)) %>%
+  ungroup()
+
+table(test_plans$nPlans)
+```
+The generators table contains columns for five kinds of planned actions - retirement, uprate, derate, repower, and other modifications. If there is only one planned action per generator in the most recent year, then these columns can be combined. The table above shows that for most generators, there are zero planned actions. For `r sum(test_plans$nPlans==1)` generators, there is a single planned action; and for `r sum(test_plans$nPlans==2)` generators, there are two planned actions. `r dplyr::filter(test_plans, State=='SC' & nPlans>1) %>% nrow()` generators in South Carolina have more than a single planned action.
+
+```{r}
+# test_plans[!test_plans$RetDate,'Planned Repower Date'] <- NA
+test_plans2 <- test_plans %>%
+  dplyr::filter(nPlans<=1) %>%
+  dplyr::select(`Utility ID`, `Plant Code`, `Generator ID`, Year,
+                Retirement=`Planned Retirement Date`,
+                Uprate=`Planned Uprate Date`,
+                Derate=`Planned Derate Date`,
+                Repower=`Planned Repower Date`,
+                Modifications=`Planned Other Modifications Date`) %>%
+  tidyr::gather('PlannedAction', 'PlannedDate',
+                Retirement:Modifications) %>%
+  dplyr::filter(!is.na(PlannedDate))
+
+generators <- EIAdatasets::generators %>%
+  dplyr::filter(State=='SC') %>%
+  dplyr::select(-`Planned Retirement Date`,
+         -`Planned Uprate Date`,
+         -`Planned Derate Date`,
+         -`Planned Repower Date`,
+         -`Planned Other Modifications Date`) %>%
+  dplyr::left_join(test_plans2) %>%
+  dplyr::filter(Year==2020) %>%
+  dplyr::select(-State,
+    -`RTO/ISO LMP Node Designation`, -Year,
+         -`RTO/ISO Location Designation for Reporting Wholesale Sales Data to FERC`,
+         -`Uprate or Derate Completed During Year`, -Sector,
+         -`Solid Fuel Gasification System?`, -`Carbon Capture Technology?`,
+         -`Turbines, Inverters, or Hydrokinetic Buoys`,
+         -`Other Combustion Technology?`, -`Ultrasupercritical Technology?`,
+         -`Planned Net Summer Capacity Uprate (MW)`, `Planned Net Winter Capacity Uprate (MW)`,
+         -`Planned New Prime Mover`, -`Planned Energy Source 1`, -`Planned New Nameplate Capacity (MW)`,
+         -`Other Planned Modifications?`, -`Turbines or Hydrokinetic Buoys`) %>%
+  dplyr::rename(UtilityID='Utility ID', Utility='Utility Name', PlantID='Plant Code', Plant='Plant Name',
+         Generator='Generator ID', Unit='Unit Code', Sector='Sector Name')
+
+rm(test_plans)
+```
+A new generators table is created, which only includes South Carolina, and several columns have been removed.
+
+# Cooling
+```{r}
+### Convert number columns to class numeric
+cooling <-  EIAdatasets::cooling %>%
+  dplyr::semi_join(generators, "PlantID") %>%
+  dplyr::mutate(
+    dplyr::across(`Diversion (gpm)`:`Consumption (gpm)`, as.numeric))
+## There was a high outlier in DischargeAvgTemp.
+## there may have been other high outliers, idk.
+## what exactly is the difference between diversion and withdrawal?
+```
+A new cooling table is created, which only includes the Plants in the new generators table. I've reviewed unique values in each column.  In the numeric columns which are currently stored as character (the columns of Diversion, Withdrawal, Discharge, and Consumption in gpm units), the only non-numeric value is ".", which I assume means NA. There are missing values in relevant columns. The list below presents the number of missing values in the numeric columns most relevant to water planning. 
+
+```{r}
+cooling %>%
+  dplyr::select(HoursInService, `Diversion (gpm)`:`Consumption (gpm)`, 
+                `Diversion (MGal)`:`Consumption (MGal)`) %>%
+  lapply(function(x) sum(is.na(x)) )
+```
+Out of `r nrow(cooling)` entries, most have values for HoursInService, and there are fewer missing values for the columns expressed as gpm than for the columns expressed as MGal. When gpm and total hours in service are available, it is presumably possible to calculate values for the MGal columns. 
+
+```{r}
+### Back calculate diversion volume using gpm and hours in service columns
+cooling2 <- cooling %>%
+  dplyr::mutate(DiversionMGal=`Diversion (gpm)`*HoursInService*60/1000000,
+                WithdrawalMGal=`Withdrawal (gpm)`*HoursInService*60/1000000,
+                DischargeMGal=`Discharge (gpm)`*HoursInService*60/1000000,
+                ConsumptionMGal=`Consumption (gpm)`*HoursInService*60/1000000) 
+
+# ggplot2::qplot(cooling2$`Diversion (MGal)`, cooling2$DiversionMGal)
+# ggplot2::qplot(cooling2$`Withdrawal (MGal)`, cooling2$WithdrawalMGal)
+# ggplot2::qplot(cooling2$`Discharge (MGal)`, cooling2$DischargeMGal)
+# ggplot2::qplot(cooling2$`Consumption (MGal)`, cooling2$ConsumptionMGal)
+## It looks like many of the numbers add up, but it definitely isn't perfect.
+```
+The back-calculation can be assessed by comparing the back calculated numbers to the MGal values which are present in the table. Upon inspection, it appears that while many of the numbers do line up, the back-calculation is not accurate enough to use in further analysis without additional investigation and verification.
+
+```{r eval=FALSE}
+## replace missing MGal values with back-calculated values
+cooling3 <- cooling2 %>%
+  dplyr::mutate(
+    Diversion = if_else(is.na(`Diversion (MGal)`), DiversionMGal, `Diversion (MGal)`),
+    Withdrawal = if_else(is.na(`Withdrawal (MGal)`), WithdrawalMGal, `Withdrawal (MGal)`),
+    Discharge = if_else(is.na(`Discharge (MGal)`), DischargeMGal, `Discharge (MGal)`),
+    Consumption = if_else(is.na(`Consumption (MGal)`), ConsumptionMGal, `Consumption (MGal)`) )
+```
+
+
+```{r eval=FALSE}
+### Remove columns not used in further analysis
+cooling %>%
+  dplyr::select(
+    -`Chlorine (thousand lbs)`, -`IntakeAvgTemp (F)`,
+    -`Diversion (gpm)`,  -`Withdrawal (gpm)`, -`Discharge (gpm)`, 
+    -`Consumption (gpm)`)
+```
+
+
+# Net Generation
+```{r}
+### --- netGen
+### select desired columns
+### reformat date columns
+netGen <- EIAdatasets::net_generation %>% 
+  filter(State=='SC') %>%
+  select(PlantID, Plant, Sector, OperatorID, Operator, GeneratorID,
+         `Prime Mover`, Jan:Dec, Year) %>%
+  gather(key="Month", value="MWh", Jan:Dec) %>%
+  monthyear_to_date(dateFormat='%b %Y')
+```
+A new table is created with only entries for South Carolina. The table is formatted with one row for each generator for each month. There are `r nrow(netGen)` rows and `r ncol(netGen)` columns: `r names(netGen)`.
+
+# Cooling Detail
+```{r}
+cooling_detail <- EIAdatasets::cooling_detail %>%
+  dplyr::filter(State == 'SC') %>%
+  dplyr::select(-State)
+
+## drop_na_cols
+not_na <- cooling_detail %>%
+  lapply(function(x) any(!is.na(x)))
+
+cooling_detail2 <- cooling_detail[, as.logical(not_na)]
+
+na_col_names <- names(not_na[!as.logical(not_na)])
+```
+After filtering the cooling detail table for only South Carolina, there are `r nrow(cooling_detail)` entries. Some columns can be removed, because they contain no values in the filtered table: `r na_col_names`. That leaves `r ncol(cooling_detail2)` columns: `r names(cooling_detail2)`.
+
+
+```{r}
+## Do i understand correctly that there will be one entry per plantcode X coolingID X month?
+# dplyr::select(cooling_detail2, `Plant Name`, `Cooling ID`, Date) %>% scutils::dupes() 
+## no, that is incorrect.
+
+
+## How many cooling units?
+# dplyr::select(cooling_detail2, `Plant Name`, `Cooling ID`) %>% unique() 
+## 43
+
+# ## How many assemblies?
+# dplyr::select(cooling_detail2, "Plant Name", "Generator ID", "Boiler ID", "Cooling ID") %>% unique() 
+# ## 91
+
+# ## Each assembly report is unique?
+# scutils::dupes(cooling_detail2, c("Plant Name", "Generator ID", "Boiler ID", "Cooling ID", "Date")) 
+# ## 0 dupes, yes.
+
+# ## How long has each assembly been reporting?
+# dplyr::group_by(cooling_detail2, `Plant Name`, `Generator ID`, `Boiler ID`, `Cooling ID`) %>%
+#   dplyr::summarise(n=n()) %>% View()
+# ## Florence Mill has 2 years, Lee has 3 years, the rest have 7 years.
+
+
+cooling_detail2 %>%
+  dplyr::rename(WithdrawalRate=`Water Withdrawal Intensity Rate (Gallons / MWh)`,
+                ConsumptionRate=`Water Consumption Intensity Rate (Gallons / MWh)`) %>%
+dplyr::group_by(`Plant Name`, `Generator ID`, `Boiler ID`, `Cooling ID`) %>%
+dplyr::summarise_at(vars(WithdrawalRate, ConsumptionRate), 
+                   list(min = ~ min(.x, na.rm=T),
+                        `25th` = ~ quantile(.x, .25, na.rm=T),
+                        median = ~ median(.x, na.rm=T), 
+                        `75th` = ~ quantile(.x, .75, na.rm=T),
+                        mean = ~ mean(.x, na.rm=T), 
+                        max = ~ max(.x, na.rm=T), 
+                        `NA.prcnt`= ~ sum(is.na(.x))*100/n())) %>% 
+  scutils::reporTable()
+
+# scutils::dupes(cooling_detail, c("Plant Name", "Boiler ID", "Cooling ID", "Date")) # ~2k dupes
+# scutils::dupes(cooling_detail, c("Plant Name", "Generator ID","Cooling ID", "Date")) # ~2k dupes
+# scutils::dupes(cooling_detail, c("Plant Name", "Generator ID", "Boiler ID","Date")) # ~2k dupes
+
+
+ggplot2::qplot(cooling_detail2$`Water Withdrawal Intensity Rate (Gallons / MWh)`)
+
+ggplot2::qplot(cooling_detail2$`Water Consumption Intensity Rate (Gallons / MWh)`)
+
+summary(cooling_detail2$`Water Withdrawal Intensity Rate (Gallons / MWh)`)
+
+summary(cooling_detail2$`Water Consumption Intensity Rate (Gallons / MWh)`)
+
+## model whether Plant Name * Cooling ID = intensity rate
+
+## model whether cooling system type = intensity rate
+
+## model Plant Name * Generator ID * Boiler ID * Cooling ID = Water use Intensity Rate 
+
+# ggplot2::qplot(cooling_detail2$`Gross Generation from Steam Turbines (MWh)`,
+#               cooling_detail2$`Gross Generation Associated with Combined Cycle Gas Turbines (MWh)`)
+## No entries have values for both gross generation types, as expected.
+## (A given generator will presumably have only 1 type)
+
+## Model whether generator type impacts water use intensity rate
+
+## attach intake avg temp and intake max temp from the cooling table.
+## model whether those factors impact water use intensity rate.
+```
+
+
+## Relationship Type
+```{r}
+table(cooling_detail$`Relationship Type`)
+## filter out unoperable entries?
+## investigate "complex" relationships
+```
+Presumably, the coded values indicate one, "1", or multiple, "M", of: cooling units, "C"; boilers "B"; and generators "G". "Simple" may be equivalent to "1C 1B 1G", and Complex may be equivalent to "MC MB MG".
+
+
+
+```{r unique-values}
+unique_values <- function(x) {
+  y <- table(x) %>% as.list() %>% as.vector()
+  z <- c(`NA` = sum(is.na(x)))
+  y <- append(y, z)
+  return(y)
+}
+
+cooling_detail2 %>% 
+  dplyr::select_if(is.character) %>%
+  lapply(unique_values)
+
+unique_values(cooling_detail2[,2])
+
+# table(cooling_detail$`Relationship Type`) %>% as.list() %>% as.vector()
+```
+
+
+```{r eval=F}
+# ### select desired columns
+#   dplyr::select(-`Number Operable Generators`, -`Number Operable Boilers`, 
+#          -`Number Operable Cooling Systems`,
+#          -`Water Type`, -`Water Source`, -`Water Source Name`, -`Water Discharge Name`,
+#          -`Other Fuel Consumption (MMBTU)`,
+#          -`Fuel Consumption from Single Shaft Combined Cycle Units (MMBTU)`,
+#          # -`Net Generation Associated with Single Shaft Combined Cycle Units (MWh)`,
+#           -`Gross Generation Associated with Single Shaft Combined Cycle Units (MWh)`,
+#          -`Summer Capacity Associated with Single Shaft Combined Cycle Units (MW)`)
+
+cool <- cooling_detail %>%
+  rename(Utility='Utility Name', Plant='Plant Name', PlantID='Plant Code',
+         Generator='Generator ID', Boiler='Boiler ID', Cooling='Cooling ID',
+         NetSteamGen=`Net Generation from Steam Turbines (MWh)`,
+         NetCCGen =
+           `Net Generation Associated with Combined Cycle Gas Turbines (MWh)`,
+         NetSSCCGen=
+           `Net Generation Associated with Single Shaft Combined Cycle Units (MWh)`,
+         Withdrawal_MGal='Water Withdrawal Volume (Million Gallons)',
+         Consumption_MGal='Water Consumption Volume (Million Gallons)') %>%
+  mutate(`gal/kWh`=`Water Consumption Intensity Rate (Gallons / MWh)`/1000,
+         NetSteamGen=if_else(is.na(NetSteamGen), 0, NetSteamGen),
+         NetCCGen = if_else(is.na(NetCCGen), 0, NetCCGen),
+         NetSSCCGen = if_else(is.na(NetSSCCGen), 0, NetSSCCGen)) %>%
+  mutate(MWh = NetSteamGen + NetCCGen + NetSSCCGen) %>%
+  select(State, Utility, Plant, PlantID, Generator, Boiler, Cooling,
+         Date, `gal/kWh`, MWh, NetSteamGen,  NetCCGen, NetSSCCGen,
+         Withdrawal_MGal, Consumption_MGal,
+         `860 Cooling Type 1`, `860 Cooling Type 2`,
+         `923 Cooling Type`, `Cooling System Type`)
+```
+
+
+```{r}
+length_unique_values <- function(x) length(unique(x, incomparables=NA))
+### This should show only a single unique value per cooling system per month.
+### Repeated for each generator and boiler ID...
+####### This isn't working right...
+test <- cool %>%
+  group_by(Utility, Plant, Cooling, Date) %>%
+  summarise(nWithdrawal = length(unique(Withdrawal_MGal, incomparables=NA)),
+            nConsumption = length(unique(Consumption_MGal, incomparables=NA)),
+            nMWh=length(unique(MWh, incomparables=NA)),
+            nBoiler=length(unique(Boiler, incomparables=NA)),
+            nGenerator=length(unique(Generator, incomparables=NA)),
+            nSteam=length(unique(round(NetSteamGen), incomparables=NA)),
+            nCC=length(unique(round(NetCCGen), incomparables=NA)),
+            nSSCC=length(unique(round(NetSSCCGen), incomparables=NA)),
+            `860 Cooling Type 1`=length(unique(`860 Cooling Type 1`, incomparables=NA)),
+            `860 Cooling Type 2`=length(unique(`860 Cooling Type 2`, incomparables=NA)),
+            `923 Cooling Type` = length(unique(`923 Cooling Type`, incomparables=NA)),
+            `Cooling System Type`=length(unique(`Cooling System Type`, incomparables=NA))
+  )
+
+### This probably won't work until the test looks right.
+coolers <- cool %>%
+  group_by(State, Utility, Plant, PlantID, Cooling, Date) %>%
+    summarise(
+      Generators = paste0(unique(Generator), collapse=', '),
+      Boilers = paste0(unique(Boiler), collapse=', '),
+      Withdrawal_MGal = unique(Withdrawal_MGal),
+      Consumption_MGal = unique(Consumption_MGal),
+      MWh=sum(MWh, na.rm=TRUE),
+      `860 Cooling Type 1`=unique(`860 Cooling Type 1`),
+      `860 Cooling Type 2`=unique(`860 Cooling Type 2`),
+      `923 Cooling Type` = unique(`923 Cooling Type`),
+      `Cooling System Type`=unique(`Cooling System Type`) )
+
+
+cool_joins <- cool %>%
+  select(Utility, PlantID, Generator, Cooling) %>%
+  unique()
+
+netGen_SC <- filter(netGen, State=='SC')
+coolers_SC <- filter(coolers, State=='SC') %>% ungroup()
+generators_SC <- filter(generators, State=='SC')
+plants_SC <- filter(plants, State=='SC')
+
+
+save(netGen_SC, file='netGen_SC.rda')
+save(coolers_SC, file='coolers_SC.rda')
+save(generators_SC, file='generators_SC.rda')
+save(plants_SC, file='plants_SC.rda')
+
+
+unique(netGen_SC[,c(1:5)]) %>% write.csv('')
+unique(coolers_SC[c(1:5, 7, 8, 12:15)])
+# nrow(unique(cooling_joins_SC[1:3])) # 53 generators
+# nrow(unique(cooling_joins_SC[c(1:2, 4)])) # 42 cooling systems
+# nrow(unique(cooling_joins_SC[1:4])) # 65 joins
+
+## Join cool and eia_cooling2 and eia_netGen2 in to a single table?
+
+
+## For each plant,
+## plot generators and cooling systems, colored by cooling system.
+
+### Title: Utility, Plant, Cooling System
+### graph 1: Withdrawal and Consumption over time.
+### graph 2: MWh, total NamePlate capacity, and capacity*power factor over time
+### graph 3: gal/kWh over time
+### graph 4: Fuel Consumption per Gen:Boil:Cool over time, facet by fuel type
+
+### Table of generators
+### Table of boilers
+### Table of coolers
+### Linked graph of boilers, generators, and coolers?
+
+#### Compare graph 1 with water use database
+#### y axis title = Million Gallons per Month
+#### Combine eia_cooling with cooling_detail
+
+# cool_SC <- filter(cool, State=='SC')
+
+
+plot_eia_coolers <- function(plantID, cooling) {
+  cool1 <- filter(coolers_SC, PlantID==plantID & Cooling==cooling)
+  cooling2 <- unique(cool1$Cooling)
+  utility <- unique(cool1$Utility)
+  plant <- unique(cool1$Plant)
+  boilerIDs <- unique(cool1$Boilers)
+  generatorIDs <- unique(cool1$Generators)
+  title <- paste0(utility, ':', plant, ', Cooling System:', cooling2)
+  subtitle <- paste0('Boilers: ', boilerIDs, '. Generators: ', generatorIDs)
+
+  graph1 <- ggplot(cool1, aes(x=Date)) +
+    geom_line(aes(y=Withdrawal_MGal), color = 'blue') +
+    geom_line(aes(y=Consumption_MGal), color='red') +
+    ggtitle(title, subtitle)
+
+  print(graph1)
+
+  ### graph 2: MWh, total NamePlate capacity, and capacity*power factor over time
+  gen <- semi_join(generators, cool1,
+                   by=c('State', 'PlantID')) %>%
+    select(Generator, `Nameplate Capacity (MW)`,
+           `Nameplate Power Factor`, `Summer Capacity (MW)`,
+           `Winter Capacity (MW)`, `Minimum Load (MW)`, Status,
+           PlannedAction, PlannedDate) %>%
+    mutate(Capacity = `Nameplate Capacity (MW)`*`Nameplate Power Factor`)
+  print(gen)
+  # graph2 <- ggplot()
+
+  graph3 <- ggplot(cool1, aes(x=Date)) +
+    geom_line(aes(y=Consumption_MGal*1000/(MWh))) +
+    ylab('Consumption Rate (gal/kWh)')
+
+  print(graph3)
+}
+
+for(i in 1:nrow(unique(coolers_SC[,c('PlantID', 'Cooling')]))) {
+  j <- unique(coolers_SC[,c('PlantID', 'Cooling')])[i,]
+
+  plot_eia_coolers(j$PlantID, j$Cooling)}
+
+
+
+
+
+## gallons_per_kWh_2017
+eia <- eia_netGen2 %>%
+  # filter(eia_netGen2, Date > as_date('2017-01-01')) %>%
+  left_join(cooling_joins_SC, by=c('OperatorID'='UtilityID', 'PlantID', 'GeneratorID')) %>%
+  left_join(eia_cooling3) %>%
+  mutate(`gal/kWh` = `Consumption (gal)`/(as.numeric(MWh)*1000)) %>%
+
+
+  # x <- gallons_per_kWh_2017 %>%
+  #   select(Operator, Plant, PrimeMover, `Cooling System Type`, CoolingID, GeneratorID) %>%
+  #   unique() %>%
+  #   left_join(PrimeMovers, c('PrimeMover'='Prime Mover')) %>%
+  #   select(-PrimeMover) %>%
+  #   rename(PrimeMover = `Prime Mover Description`)
+
+  # y <- gallons_per_MWh_2017 %>%
+  #   group_by(Operator, Plant, PrimeMover, CoolingID, GeneratorID) %>%
+#   summarise(`gal/kWh` = median(`gal/kWh`, na.rm=T))
+
+# z <- left_join(x,y)
+
+# netGen_summary <- netGen_SC %>%
+#   filter(Date > as_date('2017-01-01')) %>%
+#   left_join(PrimeMovers, c('PrimeMover'='Prime Mover')) %>%
+#   select(-PrimeMover) %>%
+#   rename(PrimeMover = `Prime Mover Description`) %>%
+#   group_by(Operator, Plant, PlantID) %>%
+#   summarise(Generators = length(unique(GeneratorID)),
+#             PrimeMovers = paste(unique(PrimeMover), collapse=' '),
+#             MWh = sum(as.numeric(MWh), na.rm=T))
+
+cooling_SC2 <- left_join(
+  cooling_SC,
+  {
+    group_by(cooling_joins_SC, PlantID, CoolingID) %>%
+      summarise(`Cooling System Type` = paste(unique(`Cooling System Type`), collapse=', '))
+  })
+
+cooling_summary <- cooling_SC2 %>%
+  filter(Date > as_date('2017-01-01')) %>%
+  group_by(PlantID) %>%
+  summarise(`Consumption (gal)` = sum(`Consumption (gal)`, na.rm=T),
+            `Cooling System Type` = paste(unique(`Cooling System Type`), collapse=', '))
+
+generator_summary <- eia_generator %>%
+  filter(Year==2017) %>%
+  group_by(`Plant Code`) %>%
+  summarise(`Nameplate Capacity (MW)`=sum(`Nameplate Capacity (MW)`, na.rm=T),
+            Fuel=paste(unique(`Energy Source 1`), collapse=', '))
+
+summary <- left_join(netGen_summary, cooling_summary) %>%
+  mutate(`gal/kWh`=`Consumption (gal)` / (MWh*1000),
+         `Average Output (MW)`=MWh/(365*24)) %>%
+  left_join(generator_summary, c('PlantID'='Plant Code')) %>%
+  select(Operator, Plant, Fuel, `Prime Mover`=PrimeMovers,
+         `Cooling System`=`Cooling System Type`, Generators,
+         `Nameplate Capacity (MW)`, `Average Output (MW)`,
+         `Consumption Factor (gal/kWh)`=`gal/kWh`) %>%
+  ungroup()
+
+write.csv(summary, 'Energy Information Administration\\Thermoelectric 2016 Summary.csv')
+
+### Summaries for SC
+# eia_generator %>%
+#   group_by(`Prime Mover`, Year) %>%
+#   summarise(`Nameplate Capacity (MW)`=sum(`Nameplate Capacity (MW)`, na.rm=T)) %>%
+#   spread(Year, `Nameplate Capacity (MW)`) %>%
+#   write.csv('Energy Information Administration\\Capacity by Prime Mover.csv')
+#
+# eia_generator %>%
+#   group_by(`Energy Source 1`, Year) %>%
+#   summarise(`Nameplate Capacity (MW)`=sum(`Nameplate Capacity (MW)`, na.rm=T)) %>%
+#   spread(Year, `Nameplate Capacity (MW)`) %>%
+#   write.csv('Energy Information Administration\\Capacity by Energy Source.csv')
+#
+# eia_generator %>%
+#   group_by(`Primary Fuel Type`, `Prime Mover`, Year) %>%
+#   summarise(`Nameplate Capacity (MW)`=sum(`Nameplate Capacity (MW)`, na.rm=T)) %>%
+#   spread(Year, `Nameplate Capacity (MW)`) %>%
+#   arrange(desc(`2016`)) %>%
+#   write.csv('Energy Information Administration\\Capacity by Prime Mover and Fuel Type.csv')
+
+
+```

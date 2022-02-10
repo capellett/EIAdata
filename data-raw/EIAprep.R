@@ -1,3 +1,6 @@
+## This script creates the following .rds files:
+## utilities, plants, generators, cooling, net_generation, and cooling_detail
+
 ## This script will read in data from EIA forms 860 and 923
 ## To run it, you need to download the forms and unzip them...
 
@@ -34,7 +37,7 @@ library(zoo)
 
 ## TODO: for the most recent year, look at the worksheet named 'Proposed'.
 
-for(i in 2013:2018) {
+for(i in 2013:2020) {
   folder <- paste0('data-raw\\downloaded excel spreadsheets\\form 860\\eia860', i, '\\')
 
   utility <- read_xlsx(paste0(folder, '1___Utility_Y', i,'.xlsx'),
@@ -60,22 +63,64 @@ names(utility2014) <- names(utility2016)
 names(utility2015) <- names(utility2016)
 utility2017 <- select(utility2017, -Caution)
 utilities <- bind_rows(
-  utility2013, utility2014, utility2015, utility2016, utility2017, utility2018)
-rm(utility2013, utility2014, utility2015, utility2016, utility2017, utility2018)
+  utility2013, utility2014, utility2015, utility2016, utility2017, utility2018,
+  utility2019, utility2020)
+rm(utility2013, utility2014, utility2015, utility2016, utility2017, utility2018,
+   utility2019, utility2020)
 
 plant2017 <- select(plant2017, -Caution)
 plants <- bind_rows(
-  plant2013, plant2014, plant2015, plant2016, plant2017, plant2018)
-rm(plant2013, plant2014, plant2015, plant2016, plant2017, plant2018)
+  plant2013, plant2014, plant2015, plant2016,
+  plant2017, plant2018, plant2019, plant2020)
+
+rm(plant2013, plant2014, plant2015, plant2016,
+   plant2017, plant2018, plant2019, plant2020)
 
 generator2017 <- select(generator2017, -Caution)
 generators <- bind_rows(
-  generator2013, generator2014, generator2015,
-  generator2016, generator2017, generator2018)
-rm(generator2013, generator2014, generator2015, generator2016, generator2017, generator2018)
+  generator2013, generator2014, generator2015, generator2016,
+  generator2017, generator2018, generator2019, generator2020)
+
+rm(generator2013, generator2014, generator2015, generator2016,
+   generator2017, generator2018, generator2019, generator2020)
 
 usethis::use_data(utilities, overwrite=T)
 usethis::use_data(plants, overwrite=T)
+
+
+## Consolidate and decode some of the columns in the Generators table
+### Decode prime movers
+### Decode energy sources
+### Reduce Date Columns
+### Reduce fuel columns
+PrimeMovers <- readxl::read_xlsx('data-raw\\Code Sheets_2017.xlsx', sheet=2)
+EnergySources <- readxl::read_xlsx('data-raw\\Code Sheets_2017.xlsx', sheet=1) %>%
+  select(`Energy Source Code`, `Energy Source Description`)
+
+generators <- generators %>%
+  EIAdatasets::join_and_drop(., PrimeMovers, by='Prime Mover', rename='Prime Mover') %>%
+  EIAdatasets::join_and_drop(., EnergySources, by=c('Energy Source 1'='Energy Source Code'),
+                rename=c("PrimaryFuelType", "PrimaryFuel")) %>%
+  EIAdatasets::join_and_drop(EnergySources, c('Energy Source 2'='Energy Source Code'),'Fuel2') %>%
+  EIAdatasets::join_and_drop(EnergySources, c('Energy Source 3'='Energy Source Code'),'Fuel3') %>%
+  EIAdatasets::join_and_drop(EnergySources, c('Energy Source 4'='Energy Source Code'),'Fuel4') %>%
+  EIAdatasets::join_and_drop(EnergySources, c('Energy Source 5'='Energy Source Code'),'Fuel5') %>%
+  EIAdatasets::join_and_drop(EnergySources, c('Energy Source 6'='Energy Source Code'),'Fuel6') %>%
+  EIAdatasets::join_and_drop(EnergySources, c('Startup Source 1'='Energy Source Code'),'Start1') %>%
+  EIAdatasets::join_and_drop(EnergySources, c('Startup Source 2'='Energy Source Code'),'Start2') %>%
+  EIAdatasets::join_and_drop(EnergySources, c('Startup Source 3'='Energy Source Code'),'Start3') %>%
+  EIAdatasets::join_and_drop(EnergySources, c('Startup Source 4'='Energy Source Code'),'Start4') %>%
+  EIAdatasets::monthyear_to_date('Month Uprate or Derate Completed', 'Year Uprate or Derate Completed',
+                    'Date Uprate or Derate Completed') %>%
+  EIAdatasets::monthyear_to_date('Operating Month', 'Operating Year', 'Operating Date') %>%
+  EIAdatasets::monthyear_to_date('Planned Retirement Month', 'Planned Retirement Year', 'Planned Retirement Date') %>%
+  EIAdatasets::monthyear_to_date('Planned Uprate Month', 'Planned Uprate Year', 'Planned Uprate Date') %>%
+  EIAdatasets::monthyear_to_date('Planned Derate Month', 'Planned Derate Year', 'Planned Derate Date') %>%
+  EIAdatasets::monthyear_to_date('Planned Repower Month', 'Planned Repower Year', 'Planned Repower Date') %>%
+  EIAdatasets::monthyear_to_date('Other Modifications Month', 'Other Modifications Year', 'Planned Other Modifications Date') %>%
+  EIAdatasets::paste_columns(c('Start1', 'Start2', 'Start3', 'Start4'), 'StartupFuels') %>%
+  EIAdatasets::paste_columns(c('Fuel2', 'Fuel3', 'Fuel4', 'Fuel5', 'Fuel6'), 'SecondaryFuels')
+
 usethis::use_data(generators, overwrite=T)
 
 # for(i in 2013:2016) {
@@ -107,7 +152,7 @@ usethis::use_data(generators, overwrite=T)
 ## It has a lot of pages/'schedules'/sheets in the yearly workbooks
 ## I compiled the two sheets I thought were relevant from each year into two workbooks.
 ## (manually). So, could be good to write a function to read in all the sheets...
-for(i in  2012:2018) {
+for(i in  2012:2020) {
   netGen <- read_xlsx(
     'data-raw\\downloaded excel spreadsheets\\f923_Page4_Generators.xlsx',
     sheet=as.character(i), skip=5, guess_max=10000)
@@ -134,64 +179,115 @@ for(i in  2012:2018) {
 
 ## f923_Schedule8_Cooling
 ## I'm not sure I need this, use cooling_detail instead ?
+cooling2019 <- dplyr::mutate(cooling2019, HoursInService = as.character(HoursInService))
 cooling <- bind_rows(
   cooling2012, cooling2013, cooling2014, cooling2015,
-  cooling2016, cooling2017, cooling2018)
+  cooling2016, cooling2017, cooling2018, cooling2019, cooling2020)
 rm(cooling2012, cooling2013, cooling2014, cooling2015,
-   cooling2016, cooling2017, cooling2018)
+   cooling2016, cooling2017, cooling2018, cooling2019, cooling2020)
 
+cooling <- cooling %>%
+  EIAdatasets::monthyear_to_date(.) %>%
+  dplyr::mutate(dplyr::across(
+    c("HoursInService", "IntakeAvgTemp (F)", "IntakeMaxTemp",
+      "DischargeAvgTemp", "DischargeMaxTemp", "Chlorine (thousand lbs)",
+      "Diversion (MGal)", "Withdrawal (MGal)", "Discharge (MGal)", "Consumption (MGal)"),
+    function (x) as.numeric(dplyr::na_if(x, '.'))))
+
+usethis::use_data(cooling, overwrite=T)
 
 ### f923_Page4_Generators
+netGen2020 <- read_xlsx(
+  'data-raw\\downloaded excel spreadsheets\\f923_Page4_Generators.xlsx',
+  sheet="2020", skip=5, guess_max=10000)
+
+names(netGen2020) <- c(
+  'PlantID', 'Combined Heat and Power', 'Plant', 'Operator', 'OperatorID',
+  'State', 'CensusRegion', 'NERCRegion', 'NAICS', 'SectorNumber', 'Sector',
+  'GeneratorID', 'PrimeMover', 'Respondent Frequency', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'YearToDate', 'BalancingAuthorityCode', 'Year')
 
 net_generation <- bind_rows(
   netGen2012, netGen2013, netGen2014, netGen2015,
-  netGen2016, netGen2017, netGen2018)
+  netGen2016, netGen2017, netGen2018, netGen2019, netGen2020)
 
 rm(netGen2012, netGen2013, netGen2014, netGen2015,
-   netGen2016, netGen2017, netGen2018)
+   netGen2016, netGen2017, netGen2018, netGen2019, netGen2020)
+
+net_generation <- net_generation %>%
+  EIAdatasets::join_and_drop(
+    ., PrimeMovers, by=c('PrimeMover'='Prime Mover'), rename='Prime Mover')
 
 usethis::use_data(net_generation, overwrite=T)
-usethis::use_data(cooling, overwrite=T)
+
 
 ###### COOLING DETAIL
 ## I downloaded these sheets from https://www.eia.gov/electricity/data/water/
 ## and compiled them in to a single workbook (it is too big, probably should have kept them separate)
 ## and deleted some whitespace in the title of the first column heading ('Utility ID')
 ## and deleted two blank rows at the top.
-cj14 <- read_xlsx(
-  'data-raw\\downloaded excel spreadsheets\\cooling detail\\cooling_detail.xlsx',
-                  sheet='2014', guess_max=10000) %>%
-  mutate(`Steam Plant Type`=as.numeric(`Steam Plant Type`))
+cj14 <- readxl::read_xlsx(
+  'data-raw\\downloaded excel spreadsheets\\cooling detail\\cooling_detail_2014.xlsx',
+  guess_max=10000) %>%
+  dplyr::mutate(`Steam Plant Type`=as.numeric(`Steam Plant Type`))
 
-cj15 <- read_xlsx(
-  'data-raw\\downloaded excel spreadsheets\\cooling detail\\cooling_detail.xlsx',
-                  sheet='2015', guess_max=10000) %>%
-  mutate(`Other Gas Consumption (MMBTU)` = as.numeric(`Other Gas Consumption (MMBTU)`),
-         `Steam Plant Type`=as.numeric(`Steam Plant Type`))
+cj15 <- readxl::read_xlsx(
+  'data-raw\\downloaded excel spreadsheets\\cooling detail\\cooling_detail_2015.xlsx',
+  guess_max=10000) %>%
+  dplyr::mutate(
+    `Other Gas Consumption (MMBTU)` = as.numeric(`Other Gas Consumption (MMBTU)`),
+    `Steam Plant Type`=as.numeric(`Steam Plant Type`))
 
-cj16 <- read_xlsx(
-  'data-raw\\downloaded excel spreadsheets\\cooling detail\\cooling_detail.xlsx',
-                  sheet='2016', guess_max=10000) %>%
-  mutate(`Other Gas Consumption (MMBTU)` = as.numeric(`Other Gas Consumption (MMBTU)`),
-         `Steam Plant Type`=as.numeric(`Steam Plant Type`))
+cj16 <- readxl::read_xlsx(
+  'data-raw\\downloaded excel spreadsheets\\cooling detail\\cooling_detail_2016.xlsx',
+  skip=2, guess_max=10000) %>%
+  dplyr::mutate(
+    `Other Gas Consumption (MMBTU)` = as.numeric(`Other Gas Consumption (MMBTU)`),
+    `Steam Plant Type`=as.numeric(`Steam Plant Type`))
 
-cj17 <- read_xlsx(
+cj17 <- readxl::read_xlsx(
   'data-raw\\downloaded excel spreadsheets\\cooling detail\\cooling_detail_2017.xlsx',
-                           skip=2, guess_max=10000) %>%
-  mutate(Year=as.numeric(Year), Month=as.numeric(Month))
+  skip=2, guess_max=10000) %>%
+  dplyr::mutate(Year=as.numeric(Year), Month=as.numeric(Month))
 
 cj18 <- readxl::read_xlsx(
   'data-raw\\downloaded excel spreadsheets\\cooling detail\\cooling_detail_2018.xlsx',
-                  skip=2, guess_max=10000) %>%
-  mutate(Year=as.numeric(Year), Month=as.numeric(Month))
+  skip=2, guess_max=10000) %>%
+  dplyr::mutate(Year=as.numeric(Year), Month=as.numeric(Month))
 
-cooling_detail <- bind_rows(cj17, cj16, cj15, cj14)
+cj19 <- readxl::read_xlsx(
+  'data-raw\\downloaded excel spreadsheets\\cooling detail\\cooling_detail_2019.xlsx',
+  skip=2, guess_max=10000) %>%
+  dplyr::mutate(Year=as.numeric(Year), Month=as.numeric(Month))
 
-cooling_detail <- bind_rows(
-  select(cj18, -...59, -...60),
-  select(cooling_detail, -X__1, -X__2)
-)
-rm(cj14, cj15, cj16, cj17, cj18)
+cj20 <- readxl::read_xlsx(
+  'data-raw\\downloaded excel spreadsheets\\cooling detail\\cooling_detail_2020.xlsx',
+  skip=2, guess_max=10000) %>%
+  dplyr::mutate(Year=as.numeric(Year), Month=as.numeric(Month))
+
+cooling_detail <-
+  list(cj20, cj19, cj18, cj17, cj16, cj15, cj14) %>%
+  lapply(
+    FUN= function(x) {
+      names(x)[1]<-"Utility ID"
+      dplyr::select(x, -`...59`, -`...60`)}) %>%
+  bind_rows()
+
+cooling_detail <- cooling_detail %>%
+  EIAdatasets::monthyear_to_date('Cooling Inservice Month', 'Cooling Inservice Year', 'Cooling Inservice Date') %>%
+  EIAdatasets::monthyear_to_date('Boiler Retirement Month', 'Boiler Retirement Year', 'Boiler Retirement Date') %>%
+  EIAdatasets::monthyear_to_date('Boiler Inservice Month', 'Boiler Inservice Year', 'Boiler Inservice Date') %>%
+  EIAdatasets::monthyear_to_date('Generator Retirement Month', 'Generator Retirement Year', 'Generator Retirement Date') %>%
+  EIAdatasets::monthyear_to_date('Generator Inservice Month', 'Generator Inservice Year', 'Generator Inservice Date') %>%
+  EIAdatasets::join_and_drop(PrimeMovers, c('Generator Prime Mover Code'='Prime Mover'), 'Prime Mover') %>%
+  EIAdatasets::join_and_drop(EnergySources, c('Generator Primary Energy Source Code'='Energy Source Code'),
+                c("PrimaryFuelType", "PrimaryFuel")) %>%
+  left_join(select(plants, 1:3, Latitude, Longitude, Year)) %>%
+  left_join(select(generators, `Plant Code`, `Generator ID`, Year,
+                   `Nameplate Capacity (MW)`, `Nameplate Power Factor`,
+                   `Summer Capacity (MW)`, `Winter Capacity (MW)`,
+                   `Minimum Load (MW)`)) %>%
+  EIAdatasets::monthyear_to_date(.)
 
 usethis::use_data(cooling_detail, overwrite=T)
 

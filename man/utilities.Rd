@@ -7,18 +7,24 @@
 \format{
 A data frame with twelve variables:
 \describe{
+\item{\code{Utility ID}}{an integer value that identifies each utility}
+\item{\code{Utility Name}}{the name of the utility}
+\item{\code{Street Address}}{}
+\item{\code{City}}{}
+\item{\code{State}}{}
+\item{\code{Zip}}{}
 \item{\code{Owner of Plants Reported on Form?}}{}
+\item{\code{Other Relationships with Plants Reported on Form?}}{}
 \item{\code{Other Relationships with Plants Reported on Form?}}{}
 \item{\code{Entity Type}}{}
 \item{\code{Year}}{Year}
 }
-
 For further details, see \url{http://www.ssa.gov/oact/NOTES/as120/LifeTables_Body.html#wp1168594}
 }
 \usage{
 utilities
 }
 \description{
-Electric utility information from EIA form 860 over the years 2013-2017.
+Annual entries for electric utility information from EIA form 860 over the years 2013-2020.
 }
 \keyword{datasets}

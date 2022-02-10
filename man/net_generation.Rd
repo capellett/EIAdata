@@ -7,16 +7,30 @@
 \format{
 A data frame with twenty seven variables:
 \describe{
-\item{\code{Owner of Plants Reported on Form?}}{}
-\item{\code{Other Relationships with Plants Reported on Form?}}{}
-\item{\code{Entity Type}}{}
-\item{\code{Year}}{Year}
+\item{\code{PlantID}}{}
+\item{\code{Combined Heat and Power}}{}
+\item{\code{Plant}}{}
+\item{\code{Operator}}{}
+\item{\code{OperatorID}}{}
+\item{\code{State}}{}
+\item{\code{CensusRegion}}{}
+\item{\code{NERCRegion}}{}
+\item{\code{NAICS}}{}
+\item{\code{SectorNumber}}{}
+\item{\code{Sector}}{}
+\item{\code{GeneratorID}}{}
+\item{\code{PrimeMover}}{}
+\item{\code{Jan ... Dec}}{}
+\item{\code{YearToDate}}{}
+\item{\code{Year}}{}
+\item{\code{Respondent Frequency}}{}
+\item{\code{BalancingAuthorityCode}}{}
 }
 }
 \usage{
 net_generation
 }
 \description{
-Net monthly electricity generation in MWh over the years 2012-2017.
+Net monthly electricity generation in MWh over the years 2012-2020.
 }
 \keyword{datasets}

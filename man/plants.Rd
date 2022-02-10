@@ -51,6 +51,6 @@ A data frame with 45 variables:
 plants
 }
 \description{
-Electric power generation plants in EIA form 860 over the years 2013-2017.
+Annual entries for electric power generation plants in EIA form 860 over the years 2013-2020.
 }
 \keyword{datasets}

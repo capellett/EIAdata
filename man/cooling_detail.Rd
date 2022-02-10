@@ -5,12 +5,68 @@
 \alias{cooling_detail}
 \title{Detailed cooling information}
 \format{
-A data frame with twenty seven variables:
+A data frame with sixty eight variables:
 \describe{
-\item{\code{Owner of Plants Reported on Form?}}{}
-\item{\code{Other Relationships with Plants Reported on Form?}}{}
-\item{\code{Entity Type}}{}
+\item{\code{Utility ID}}{}
+\item{\code{State}}{}
+\item{\code{Plant Code}}{}
+\item{\code{Plant Name}}{}
 \item{\code{Year}}{Year}
+\item{\code{Month}}{}
+\item{\code{Generator ID}}{}
+\item{\code{Boiler ID}}{}
+\item{\code{Cooling ID}}{}
+\item{\code{Generator Primary Technology}}{}
+\item{\code{Summer Capacity of Steam Turbines (MW)}}{}
+\item{\code{Gross Generation from Steam Turbines (MWh)}}{}
+\item{\code{Net Generation from Steam Turbines (MWh)}}{}
+\item{\code{Summer Capacity Associated with Single Shaft Combined Cycle Units (MW)}}{}
+\item{\code{Gross Generation Associated with Single Shaft Combined Cycle Units (MWh)}}{}
+\item{\code{Net Generation Associated with Single Shaft Combined Cycle Units (MWh)}}{}
+\item{\code{}}{}
+\item{\code{}}{}
+\item{\code{}}{}
+\item{\code{Fuel Consumption from All Fuel Types (MMBTU)}}{}
+\item{\code{}}{}
+\item{\code{}}{}
+\item{\code{}}{}
+\item{\code{Coal Consumption (MMBTU)}}{}
+\item{\code{Natural Gas Consumption (MMBTU)}}{}
+\item{\code{Petroleum Consumption (MMBTU)}}{}
+\item{\code{Biomass Consumption (MMBTU)}}{}
+\item{\code{Other Gas Consumption (MMBTU)}}{}
+\item{\code{Other Fuel Consumption (MMBTU)}}{}
+\item{\code{Water Withdrawal Volume (Million Gallons)}}{}
+\item{\code{Water Consumption Volume (Million Gallons)}}{}
+\item{\code{Water Withdrawal Intensity Rate (Gallons / MWh)}}{}
+\item{\code{}}{}
+\item{\code{Water Withdrawal Rate per Fuel Consumption (Gallons / MMBTU)}}{}
+\item{\code{}}{}
+\item{\code{Cooling Unit Hours in Service}}{}
+\item{\code{Average Distance of Water Intake Below Water Surface (Feet)}}{}
+\item{\code{860 Cooling Type 1}}{}
+\item{\code{860 Cooling Type 2}}{}
+\item{\code{923 Cooling Type}}{}
+\item{\code{Cooling System Type}}{}
+\item{\code{Water Type}}{}
+\item{\code{Water Source}}{}
+\item{\code{Water Source Name}}{}
+\item{\code{Water Discharge Name}}{}
+\item{\code{Generator Status}}{}
+\item{\code{Generator Inservice Month}}{}
+\item{\code{Generator Inservice Year}}{}
+\item{\code{Generator Retirement Month}}{}
+\item{\code{Generator Retirement Year}}{}
+\item{\code{Boiler Status}}{}
+\item{\code{Boiler Inservice Month}}{}
+\item{\code{Boiler Inservice Year}}{}
+\item{\code{Boiler Retirement Month}}{}
+\item{\code{Boiler Retirement Year}}{}
+\item{\code{Cooling Status}}{}
+\item{\code{Cooling Inservice Month}}{}
+\item{\code{Cooling Inservice Year}}{}
+\item{\code{Combined Heat and Power Generator?}}{}
+\item{\code{}}{}
 }
 }
 \usage{
