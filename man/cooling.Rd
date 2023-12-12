@@ -36,5 +36,6 @@ cooling
 }
 \description{
 Monthly entries for cooling of electricity generation plants over the years 2012-2020.
+From EIA Form 923, Schedule 8.
 }
 \keyword{datasets}

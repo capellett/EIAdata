@@ -32,5 +32,6 @@ net_generation
 }
 \description{
 Net monthly electricity generation in MWh over the years 2012-2020.
+From EIA Form 923, Page 4.
 }
 \keyword{datasets}
