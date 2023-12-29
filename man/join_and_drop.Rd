@@ -12,6 +12,8 @@ join_and_drop(df1, df2, by = NULL, rename = FALSE)
 \item{df2}{a dataframe}
 
 \item{by}{a character vector of variables to join by}
+
+\item{rename}{logical}
 }
 \description{
 left join two dataframes, dropping extra copied columns

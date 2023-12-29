@@ -34,8 +34,6 @@
 #'   \item{\code{Year}}{2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020}
 #' }
 #' For further details, see \url{http://www.ssa.gov/oact/NOTES/as120/LifeTables_Body.html#wp1168594}
-
-
 "utilities"
 
 #' plants
@@ -52,14 +50,14 @@
 #' \item{\code{Balancing Authority Code}}{A 5-character code for the balancing authority managing supply, demand, and interchanges within an electrically defined area. May or may not be the same as the Owner of Transmission/Distribution Facilities.}
 #' \item{\code{Balancing Authority Name}}{Name of Balancing Authority}
 #' \item{\code{Name of Water Source}}{The name of the principal source from which cooling water or water for generating power for hydroelectric plants is obtained. If #'water is from an underground aquifer, provide name of aquifer, if known. If name of 'aquifer is not known,  “Wells.”  “Municipality” if the water is from a municipality.  “UNK” for planned facilities for which the water source is not known.  “NA” for
-#'plants that do not use a water source for cooling or hydroelectric generation.}
+#'    plants that do not use a water source for cooling or hydroelectric generation.}
 #' \item{\code{Primary Purpose (NAICS Code)}}{North American Industry Classification System (NAICS) code 'that best describes the primary purpose of the plant.Electric utility plants and
-#'independent power producers whose primary purpose is generating electricity for sale will generally use code 22. For generators whose primary business is an industrial or
-#'commercial process (e.g., paper mills, refineries, chemical plants, etc.) and for which generating electricity is a secondary purpose, use a code other than 22.}
+#'     independent power producers whose primary purpose is generating electricity for sale will generally use code 22. For generators whose primary business is an industrial or
+#'    commercial process (e.g., paper mills, refineries, chemical plants, etc.) and for which generating electricity is a secondary purpose, use a code other than 22.}
 #' \item{\code{Regulatory Status}}{Indicates whether the plant is regulated (RE) or non-regulated (NR) }
 #' \item{\code{Sector}}{Plant-level sector name, designated by the primary purpose, regulatory status and plant-level combined heat and power status.Options include Commercial, Electric Utility, Industrial, Non-CHP Independent Power Producer (IPP), CHP IPP.}
 #' \item{\code{Sector Name}}{Plant-level sector number, designated by the primary purpose, regulatory status and plant-level combined heat and power status, "1 = Electric Utility , 2 = Independent Power Producer, Non-Combined Heat and Power, 3 = Independent Power Producer, Combined Heat and Power, 4 = Commercial, Non-Combined Heat and Power,
-#' 5 = Commercial, Combined Heat and Power, 6 = Industrial, Non-Combined Heat and Power, 7 = Industrial, Combined Heat and Power" }
+#'    5 = Commercial, Combined Heat and Power, 6 = Industrial, Non-Combined Heat and Power, 7 = Industrial, Combined Heat and Power" }
 #' \item{\code{Net Metering (for facilities with solar and wind generation)}}{desc}
 #' \item{\code{FERC Cogeneration Status}}{Indicates of whether the plant has FERC qualifying facility cogenerator status.Yes , No}
 #' \item{\code{FERC Cogeneration Docket Number}}{The docket number relating to the FERC qualifying facility cogenerator status}
@@ -102,17 +100,17 @@
 #' \item{\code{County}}{}
 #' \item{\code{Generator ID}}{The unique generator identification commonly used by plant management.}
 #' \item{\code{Prime Mover}}{The prime mover codes. Prime Mover Code Prime Mover Description
-#' BA Energy Storage, Battery
-#'CE Energy Storage, Compressed Air
-#'CP Energy Storage, Concentrated Solar Power
-#'FW Energy Storage, Flywheel
-#'PS Energy Storage, Reversible Hydraulic Turbine (Pumped Storage)
-#' ES Energy Storage, Other (specify in SCHEDULE 7)
-#' ST Steam Turbine, including nuclear, geothermal and solar steam (does not include combined cycle)
-#' GT Combustion (Gas) Turbine (does not include the combustion turbine part of a combined cycle; see code CT, below)
-#' IC Internal Combustion Engine (diesel, piston, reciprocating)
-#' CA Combined Cycle Steam Part
-#' CT Combined Cycle Combustion Turbine Part
+#'    BA Energy Storage, Battery
+#'    CE Energy Storage, Compressed Air
+#'    CP Energy Storage, Concentrated Solar Power
+#'    FW Energy Storage, Flywheel
+#'    PS Energy Storage, Reversible Hydraulic Turbine (Pumped Storage)
+#'   ES Energy Storage, Other (specify in SCHEDULE 7)
+#'   ST Steam Turbine, including nuclear, geothermal and solar steam (does not include combined cycle)
+#'   GT Combustion (Gas) Turbine (does not include the combustion turbine part of a combined cycle; see code CT, below)
+#'  IC Internal Combustion Engine (diesel, piston, reciprocating)
+#'  CA Combined Cycle Steam Part
+#'  CT Combined Cycle Combustion Turbine Part
 #' CS Combined Cycle Single Shaft (combustion turbine and steam turbine share a single generator)
 #' CC Combined Cycle Total Unit (use only for plants/generators that are in planning stage, for which specific generator details cannot be provided)
 #' HA Hydrokinetic, Axial Flow Turbine
@@ -397,13 +395,11 @@
 #' (SA)	Saline Water
 #' (OT)	Other (specify in SCHEDULE 7)
 #' }
-
 #' \item{\code{Water Source}}{(SW)	Surface Water (ex: river, canal, bay)
 #' (GW)	Ground Water (ex: aquifer, well)
 #' (PD)	Plant Discharge Water (ex: wastewater treatment plant discharge)
 #' (OT)	Other (specify in SCHEDULE 7)
 #'}
-
 #' \item{\code{Water Source Name}}{Name of river, lake, or water source that provides cooling water}
 #' \item{\code{Water Discharge Name}}{Name of river, lake, or water source that cooling water is discharged into.}
 #' \item{\code{Generator Status}}{}

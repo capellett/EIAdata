@@ -15,14 +15,14 @@ A data frame with 45 variables:
 \item{\code{Balancing Authority Code}}{A 5-character code for the balancing authority managing supply, demand, and interchanges within an electrically defined area. May or may not be the same as the Owner of Transmission/Distribution Facilities.}
 \item{\code{Balancing Authority Name}}{Name of Balancing Authority}
 \item{\code{Name of Water Source}}{The name of the principal source from which cooling water or water for generating power for hydroelectric plants is obtained. If #'water is from an underground aquifer, provide name of aquifer, if known. If name of 'aquifer is not known,  “Wells.”  “Municipality” if the water is from a municipality.  “UNK” for planned facilities for which the water source is not known.  “NA” for
-plants that do not use a water source for cooling or hydroelectric generation.}
+   plants that do not use a water source for cooling or hydroelectric generation.}
 \item{\code{Primary Purpose (NAICS Code)}}{North American Industry Classification System (NAICS) code 'that best describes the primary purpose of the plant.Electric utility plants and
-independent power producers whose primary purpose is generating electricity for sale will generally use code 22. For generators whose primary business is an industrial or
-commercial process (e.g., paper mills, refineries, chemical plants, etc.) and for which generating electricity is a secondary purpose, use a code other than 22.}
+    independent power producers whose primary purpose is generating electricity for sale will generally use code 22. For generators whose primary business is an industrial or
+   commercial process (e.g., paper mills, refineries, chemical plants, etc.) and for which generating electricity is a secondary purpose, use a code other than 22.}
 \item{\code{Regulatory Status}}{Indicates whether the plant is regulated (RE) or non-regulated (NR) }
 \item{\code{Sector}}{Plant-level sector name, designated by the primary purpose, regulatory status and plant-level combined heat and power status.Options include Commercial, Electric Utility, Industrial, Non-CHP Independent Power Producer (IPP), CHP IPP.}
 \item{\code{Sector Name}}{Plant-level sector number, designated by the primary purpose, regulatory status and plant-level combined heat and power status, "1 = Electric Utility , 2 = Independent Power Producer, Non-Combined Heat and Power, 3 = Independent Power Producer, Combined Heat and Power, 4 = Commercial, Non-Combined Heat and Power,
-5 = Commercial, Combined Heat and Power, 6 = Industrial, Non-Combined Heat and Power, 7 = Industrial, Combined Heat and Power" }
+   5 = Commercial, Combined Heat and Power, 6 = Industrial, Non-Combined Heat and Power, 7 = Industrial, Combined Heat and Power" }
 \item{\code{Net Metering (for facilities with solar and wind generation)}}{desc}
 \item{\code{FERC Cogeneration Status}}{Indicates of whether the plant has FERC qualifying facility cogenerator status.Yes , No}
 \item{\code{FERC Cogeneration Docket Number}}{The docket number relating to the FERC qualifying facility cogenerator status}
