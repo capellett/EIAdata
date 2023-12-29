@@ -3,48 +3,52 @@
 \docType{data}
 \name{plants}
 \alias{plants}
-\title{Plants}
+\title{plants}
 \format{
 A data frame with 45 variables:
 \describe{
 \item{\code{Utility ID}, \code{Utility Name}}{Unique identification codes and names of the electricity utilities.}
-\item{\code{Plant Code}, \code{Plant Name}}{Numeric codes and names of the power plants.}
-\item{\code{Street Address}, \code{City}, \code{State}, \code{Zip},
-    \code{County}, \code{Latitude}, \code{Longitude}}{Location of each plant.}
-\item{\code{NERC Region}}{desc}
-\item{\code{Balancing Authority Code}}{desc}
-\item{\code{Balancing Authority Name}}{desc}
-\item{\code{Name of Water Source}}{desc}
-\item{\code{Primary Purpose (NAICS Code)}}{desc}
-\item{\code{Regulatory Status}}{desc}
-\item{\code{Sector}}{desc}
-\item{\code{Sector Name}}{desc}
+\item{\code{Plant Code}, \code{Plant Name}}{EIA-assigned plant code}
+\item{\code{County}},
+\item{\code{Latitude}, \code{Longitude}}{Physical location of each plant, including address and geographic coordinates.}
+\item{\code{NERC Region}}{North American Electric Reliability Corporation (NERC)region in which the plant operates}
+\item{\code{Balancing Authority Code}}{A 5-character code for the balancing authority managing supply, demand, and interchanges within an electrically defined area. May or may not be the same as the Owner of Transmission/Distribution Facilities.}
+\item{\code{Balancing Authority Name}}{Name of Balancing Authority}
+\item{\code{Name of Water Source}}{The name of the principal source from which cooling water or water for generating power for hydroelectric plants is obtained. If #'water is from an underground aquifer, provide name of aquifer, if known. If name of 'aquifer is not known,  “Wells.”  “Municipality” if the water is from a municipality.  “UNK” for planned facilities for which the water source is not known.  “NA” for
+plants that do not use a water source for cooling or hydroelectric generation.}
+\item{\code{Primary Purpose (NAICS Code)}}{North American Industry Classification System (NAICS) code 'that best describes the primary purpose of the plant.Electric utility plants and
+independent power producers whose primary purpose is generating electricity for sale will generally use code 22. For generators whose primary business is an industrial or
+commercial process (e.g., paper mills, refineries, chemical plants, etc.) and for which generating electricity is a secondary purpose, use a code other than 22.}
+\item{\code{Regulatory Status}}{Indicates whether the plant is regulated (RE) or non-regulated (NR) }
+\item{\code{Sector}}{Plant-level sector name, designated by the primary purpose, regulatory status and plant-level combined heat and power status.Options include Commercial, Electric Utility, Industrial, Non-CHP Independent Power Producer (IPP), CHP IPP.}
+\item{\code{Sector Name}}{Plant-level sector number, designated by the primary purpose, regulatory status and plant-level combined heat and power status, "1 = Electric Utility , 2 = Independent Power Producer, Non-Combined Heat and Power, 3 = Independent Power Producer, Combined Heat and Power, 4 = Commercial, Non-Combined Heat and Power,
+5 = Commercial, Combined Heat and Power, 6 = Industrial, Non-Combined Heat and Power, 7 = Industrial, Combined Heat and Power" }
 \item{\code{Net Metering (for facilities with solar and wind generation)}}{desc}
-\item{\code{FERC Cogeneration Status}}{desc}
-\item{\code{FERC Cogeneration Docket Number}}{desc}
-\item{\code{FERC Small Power Producer Status}}{desc}
-\item{\code{FERC Small Power Producer Docket Number}}{desc}
-\item{\code{FERC Exempt Wholesale Generator Status}}{desc}
-\item{\code{FERC Exempt Wholesale Generator Docket Number}}{desc}
-\item{\code{Ash Impoundment?}}{desc}
-\item{\code{Ash Impoundment Lined?}}{desc}
-\item{\code{Ash Impoundment Status}}{desc}
-\item{\code{Transmission or Distribution System Owner}}{desc}
-\item{\code{Transmission or Distribution System Owner ID}}{desc}
-\item{\code{Transmission or Distribution System Owner State}}{desc}
-\item{\code{Grid Voltage (kV)}}{desc}
-\item{\code{Grid Voltage 2 (kV)}}{desc}
-\item{\code{Grid Voltage 3 (kV)}}{desc}
+\item{\code{FERC Cogeneration Status}}{Indicates of whether the plant has FERC qualifying facility cogenerator status.Yes , No}
+\item{\code{FERC Cogeneration Docket Number}}{The docket number relating to the FERC qualifying facility cogenerator status}
+\item{\code{FERC Small Power Producer Status}}{Indicates of whether the plant has FERC qualifying facility small power producer status}
+\item{\code{FERC Small Power Producer Docket Number}}{The docket number relating to the FERC qualifying facility small power producer status}
+\item{\code{FERC Exempt Wholesale Generator Status}}{Indicates of whether the plant has FERC qualifying facility exempt wholesale generator status}
+\item{\code{FERC Exempt Wholesale Generator Docket Number}}{The docket number relating to the FERC qualifying facility exempt wholesale generator status}
+\item{\code{Ash Impoundment?}}{Is there an ash impoundment (e.g. pond, reservoir) at the plant? }
+\item{\code{Ash Impoundment Lined?}}{If there is an ash impoundment at the plant, is the impoundment lined?}
+\item{\code{Ash Impoundment Status}}{If there is an ash impoundment at the plant,  the ash impoundment status as of December 31 of the reporting year}
+\item{\code{Transmission or Distribution System Owner}}{Name of the owner of the transmission or distribution system to which the plant is interconnected}
+\item{\code{Transmission or Distribution System Owner ID}}{EIA-assigned code for owner of transmission/distribution system to which the plant is interconnected}
+\item{\code{Transmission or Distribution System Owner State}}{State location for owner of transmission/distribution system to which the plant is interconnected}
+\item{\code{Grid Voltage (kV)}}{Plant's grid voltage at point of interconnection to transmission or distibution facilities. If the plant is interconnected to more than three transmission / distriubtion facilites, the three highest grid voltages are reported}
+\item{\code{Grid Voltage 2 (kV)}}{Plant's grid voltage at point of interconnection to transmission or distibution facilities. If the plant is interconnected to more than three transmission / distriubtion facilites, the three highest grid voltages are reported}
+\item{\code{Grid Voltage 3 (kV)}}{Plant's grid voltage at point of interconnection to transmission or distibution facilities}{Plant's grid voltage at point of interconnection to transmission or distibution facilities. If the plant is interconnected to more than three transmission / distriubtion facilites, the three highest grid voltages are reported}
 \item{\code{Natural Gas Pipeline Name}}{desc}
-\item{\code{Year}}{desc}
-\item{\code{Energy Storage}}{desc}
-\item{\code{Natural Gas LDC Name}}{desc}
-\item{\code{Natural Gas Pipeline Name 1}}{desc}
-\item{\code{Natural Gas Pipeline Name 2}}{desc}
-\item{\code{Natural Gas Pipeline Name 3}}{desc}
-\item{\code{Pipeline Notes}}{desc}
-\item{\code{Natural Gas Storage}}{desc}
-\item{\code{Liquified Natural Gas Storage}}{desc}
+\item{\code{Year}}{2013 to 2019}
+\item{\code{Energy Storage}}{Indicates if the facility have energy storage capabilities}
+\item{\code{Natural Gas LDC Name}}{Names of Local Distribution Company (LDC), connected to natural gas burning power plants}
+\item{\code{Natural Gas Pipeline Name 1}}{The name of the owner or operator of natural gas pipeline that connects directly to this facility or that connects to a lateral pipeline owned by this facility}
+\item{\code{Natural Gas Pipeline Name 2}}{The name of the owner or operator of natural gas pipeline that connects directly to this facility or that connects to a lateral pipeline owned by this facility}
+\item{\code{Natural Gas Pipeline Name 3}}{The name of the owner or operator of natural gas pipeline that connects directly to this facility or that connects to a lateral pipeline owned by this facility}
+\item{\code{Pipeline Notes}}{Additional owner or operator of natural gas pipeline}
+\item{\code{Natural Gas Storage}}{Indicates if the facility have on-site storage of natural gas}
+\item{\code{Liquified Natural Gas Storage}}{Indicates if the facility have the capability to store the natural gas in the form of liquefied natural gas}
 }
 }
 \usage{

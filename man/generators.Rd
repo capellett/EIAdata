@@ -11,67 +11,131 @@ A data frame with seventy five variables:
 \item{\code{Plant Code}, \code{Plant Name}}{Numeric codes and names of the power plants.}
 \item{\code{State}}{}
 \item{\code{County}}{}
-\item{\code{Generator ID}}{}
-\item{\code{Prime Mover}}{}
-\item{\code{Unit Code}}{}
-\item{\code{Ownership}}{}
-\item{\code{Duct Burners}}{}
-\item{\code{Can Bypass Heat Recovery Steam Generator?}}{}
-\item{\code{RTO/ISO LMP Node Designation}}{}
-\item{\code{RTO/ISO Location Designation for Reporting Wholesale Sales Data to FERC}}{}
-\item{\code{Nameplate Capacity (MW)}}{}
-\item{\code{Nameplate Power Factor}}{}
-\item{\code{Summer Capacity (MW)}}{}
-\item{\code{Winter Capacity (MW)}}{}
-\item{\code{Minimum Load (MW)}}{}
-\item{\code{Uprate or Derate Completed During Year}}{}
+\item{\code{Generator ID}}{The unique generator identification commonly used by plant management.}
+\item{\code{Prime Mover}}{The prime mover codes. Prime Mover Code Prime Mover Description
+BA Energy Storage, Battery
+CE Energy Storage, Compressed Air
+CP Energy Storage, Concentrated Solar Power
+FW Energy Storage, Flywheel
+PS Energy Storage, Reversible Hydraulic Turbine (Pumped Storage)
+ES Energy Storage, Other (specify in SCHEDULE 7)
+ST Steam Turbine, including nuclear, geothermal and solar steam (does not include combined cycle)
+GT Combustion (Gas) Turbine (does not include the combustion turbine part of a combined cycle; see code CT, below)
+IC Internal Combustion Engine (diesel, piston, reciprocating)
+CA Combined Cycle Steam Part
+CT Combined Cycle Combustion Turbine Part
+CS Combined Cycle Single Shaft (combustion turbine and steam turbine share a single generator)
+CC Combined Cycle Total Unit (use only for plants/generators that are in planning stage, for which specific generator details cannot be provided)
+HA Hydrokinetic, Axial Flow Turbine
+HB Hydrokinetic, Wave Buoy
+HK Hydrokinetic, Other (specify in SCHEDULE 7)
+HY Hydroelectric Turbine (includes turbines associated with delivery of water by pipeline)
+BT Turbines Used in a Binary Cycle (including those used for geothermal applications)
+PV Photovoltaic
+WT Wind Turbine, Onshore
+WS Wind Turbine, Offshore
+FC Fuel Cell
+OT Other (specify in SCHEDULE 7)}
+\item{\code{Unit Code}}{ If this generator
+operates as a single unit with another generator (including as a combined cycle unit),
+enter a unique 4-character code for the unit. All generators that operate as a unit must
+have the same unit code. Leave blank if this generator does not operate as a single unit
+with another generator}
+\item{\code{Ownership}}{ownership for each generator using the following codes
+Ownership Code Ownership Code (S) Single ownership by respondent (J) Jointly owned with another entity
+(W) Wholly owned by an entity other than respondent}
+\item{\code{Duct Burners}}{“Yes” if 1) the generator has a combined cycle prime mover code of “Combined Cycle Steam Part (CA)” “Combined Cycle Single Shaft (CS),” or “Combined Cycle Total Unit (CC,)” and 2) if the unit has duct-burners for
+supplementary firing of the turbine exhaust gas. Otherwise, check “No.”}
+\item{\code{Can Bypass Heat Recovery Steam Generator?}}{“Yes” if the generator has a combined cycle prime mover code of
+“Combined Cycle Combustion Turbine Part (CT)” or “Combined Cycle Total Unit (CC)”
+and 2) the combustion turbine can operate while bypassing the heat recovery steam
+generator. Otherwise, “No.”}
+\item{\code{RTO/ISO LMP Node Designation}}{
+this generator operates in an electric system operated by a Regional Transmission
+Organization (RTO) or Independent System Operator (ISO) and the RTO/ISO calculates
+a nodal Locational Marginal Price (LMP) at the generator location, then provide the nodal
+designation used to identify the price node in RTO/ISO LMP price reports.
+}
+\item{\code{RTO/ISO Location Designation for Reporting Wholesale Sales Data to FERC}}{
+ If this generator operates in an electric
+system operated by a Regional Transmission Organization (RTO) or Independent
+System Operator (ISO) and the generator’s wholesale sales transaction data is reported
+to FERC for the Electric Quarterly Report, then provide the designation used to report the
+specific location of the wholesale sales transactions to FERC.}
+\item{\code{Nameplate Capacity (MW)}}{
+the highest value on the generator nameplate in MW rounded to the nearest tenth, as measured in
+alternating current (AC). If the nameplate capacity is expressed in kilovolt amperes
+(kVA), first convert the nameplate capacity to kilowatts by multiplying the corresponding
+power factor by the kVA and then convert to megawatts by dividing by 1,000. Round this
+value to the nearest tenth.}
+\item{\code{Nameplate Power Factor}}{ The power factor stamped on the generator nameplate. This should be the same power factor used
+to convert the generator’s kilovolt-ampere rating (kVA) to megawatts (MW) as directed for
+line 1a above. Solar photovoltaic systems, wind turbines, batteries, fuel cells, and
+flywheels may skip this question.}
+\item{\code{Summer Capacity (MW)}}{The net summer capacity}
+\item{\code{Winter Capacity (MW)}}{The net winter capacity}
+\item{\code{Minimum Load (MW)}}{Minimum load (MW) at which the unit can operate continuously}
+\item{\code{Uprate or Derate Completed During Year}}{“Yes” if an uprate or derate project was implemented during the
+reporting year. “No” if it was not. If both an uprate and derate were implemented
+during the reporting year}
 \item{\code{Month Uprate or Derate Completed}}{}
 \item{\code{Year Uprate or Derate Completed}}{}
-\item{\code{Status}}{}
-\item{\code{Synchronized to Transmission Grid}}{}
-\item{\code{Operating Month}}{}
-\item{\code{Operating Year}}{}
-\item{\code{Planned Retirement Month}}{}
-\item{\code{Planned Retirement Year}}{}
-\item{\code{Associated with Combined Heat and Power System}}{}
-\item{\code{Sector Name}}{}
-\item{\code{Sector}}{}
-\item{\code{Topping or Bottoming}}{}
-\item{\code{Energy Source 1, 2, 3, ... 6}}{}
-\item{\code{Startup Source 1, 2, 3, ... 6}}{}
-\item{\code{Solid Fuel Gasification System?}}{}
-\item{\code{Carbon Capture Technology?}}{}
-\item{\code{Turbines, Inverters, or Hydrokinetic Buoys}}{}
-\item{\code{Time from Cold Shutdown to Full Load}}{}
-\item{\code{Fluidized Bed Technology?}}{}
-\item{\code{Pulverized Coal Technology?}}{}
-\item{\code{Stoker Technology?}}{}
-\item{\code{Other Combustion Technology?}}{}
-\item{\code{Subcritical Technology?}}{}
-\item{\code{Supercritical Technology?}}{}
-\item{\code{Ultrasupercritical Technology?}}{}
-\item{\code{Planned Net Summer Capacity Uprate (MW)}}{}
-\item{\code{Planned Net Winter Capacity Uprate (MW)}}{}
-\item{\code{Planned Uprate Month}}{}
-\item{\code{Planned Uprate Year}}{}
-\item{\code{Planned Net Summer Capacity Derate (MW)}}{}
-\item{\code{Planned Net Winter Capacity Derate (MW)}}{}
-\item{\code{Planned Derate Month}}{}
-\item{\code{Planned Derate Year}}{}
-\item{\code{Planned New Prime Mover}}{}
-\item{\code{Planned Energy Source 1}}{}
-\item{\code{Planned New Nameplate Capacity (MW)}}{}
-\item{\code{Planned Repower Month}}{}
-\item{\code{Planned Repower Year}}{}
-\item{\code{Other Planned Modifications?}}{}
-\item{\code{Other Modifications Month}}{}
-\item{\code{Other Modifications Year}}{}
-\item{\code{Cofire Fuels?}}{}
-\item{\code{Switch Between Oil and Natural Gas?}}{}
+\item{\code{Status}}{(OP) Operating – in service (commercial operation) and producing some
+electricity. Includes peaking units that are run on an as needed
+(intermittent or seasonal) basis.
+(SB) Standby/Backup – available for service but not normally used (has
+little or no generation during the year) for this reporting period.
+(OS) Out of service – was not used for some or all of the reporting period
+and is NOT expected to be returned to service in the next calendar
+year. (OA) Out of service – was not used for some or all of the reporting period
+but is expected to be returned to service in the next calendar year.
+(RE) Retired – no longer in service and not expected to be returned to
+service}
+\item{\code{Synchronized to Transmission Grid}}{If the status code is standby (SB),  “Yes” if the generator is currently
+equipped to be synchronized to the grid when operating. “No” if it is not.}
+\item{\code{Operating Month}}{Month the generator began commercial operation}
+\item{\code{Operating Year}}{Year the generator began commercial operation}
+\item{\code{Planned Retirement Month}}{Month the generator retired}
+\item{\code{Planned Retirement Year}}{Year the generator retired}
+\item{\code{Associated with Combined Heat and Power System}}{ “Yes” if this generator is associated with a combined heat and power system. “No” if it is not}
+\item{\code{Sector Name}}{Plant-level sector number, designated by the primary purpose, regulatory status and plant-level combined heat and power status}
+\item{\code{Sector}}{Plant-level sector name, designated by the primary purpose, regulatory status and plant-level combined heat and power status}
+\item{\code{Topping or Bottoming}}{If the generator is associated with a combined heat and power system, indicates whether the generator is part of a topping cycle or a bottoming cycle'}
+\item{\code{Energy Source 1, 2, 3, ... 6}}{The code representing the predominant (1-6) type of energy that fuels the generator}
+\item{\code{Startup Source 1, 2, 3, ... 6}}{The code representing the first, second, third or fourth start-up and flame stabilization energy source used by the combustion unit(s) associated with this generator}
+\item{\code{Solid Fuel Gasification System?}}{Indicates whether the generator is part of a solid fuel gasification system}
+\item{\code{Carbon Capture Technology?}}{Indicates whether the generator uses carbon capture technology}
+\item{\code{Turbines, Inverters, or Hydrokinetic Buoys}}{Number of wind turbines, or hydrokinetic buoys}
+\item{\code{Time from Cold Shutdown to Full Load}}{The minimum amount of time required to bring the unit to full load from shutdown}
+\item{\code{Fluidized Bed Technology?}}{Indicates whether the generator uses fluidized bed technology (Yes / No)}
+\item{\code{Pulverized Coal Technology?}}{Indicates whether the generator uses pulverized coal technology(Yes / No)}
+\item{\code{Stoker Technology?}}{Indicates whether the generator uses stoker technology (Yes / No)}
+\item{\code{Other Combustion Technology?}}{Indicates whether the generator uses other combustion technologies (Yes / No)}
+\item{\code{Subcritical Technology?}}{Indicates whether the generator uses subcritical technology (Yes / No)}
+\item{\code{Supercritical Technology?}}{Indicates whether the generator uses supercritical technology (Yes / No)}
+\item{\code{Ultrasupercritical Technology?}}{Indicates whether the generator uses ultra-supercritical technology (Yes/No)}
+\item{\code{Planned Net Summer Capacity Uprate (MW)}}{Increase in summer capacity expected to be realized from the modification to the equipment}
+\item{\code{Planned Net Winter Capacity Uprate (MW)}}{Increase in winter capacity expected to be realized from the uprate modification to the equipment}
+\item{\code{Planned Uprate Month}}{Planned effective month that the generator is scheduled to enter operation after the uprate modification}
+\item{\code{Planned Uprate Year}}{Planned effective year that the generator is scheduled to enter operation after the uprate modification}
+\item{\code{Planned Net Summer Capacity Derate (MW)}}{Decrease in summer capacity expected to be realized from the derate modification to the equipment}
+\item{\code{Planned Net Winter Capacity Derate (MW)}}{Decrease in winter capacity expected to be realized from the derate modification to the equipment}
+\item{\code{Planned Derate Month}}{Planned effective month that the generator is scheduled to enter operation after the derate modification}
+\item{\code{Planned Derate Year}}{Planned effective year that the generator is scheduled to enter operation after the derate modification}
+\item{\code{Planned New Prime Mover}}{New prime mover for the planned repowered generator}
+\item{\code{Planned Energy Source 1}}{New energy source code for the planned repowered generator}
+\item{\code{Planned New Nameplate Capacity (MW)}}{The expected new namplate capacity for the generator}
+\item{\code{Planned Repower Month}}{Planned effective month that the generator is scheduled to enter operation after the repowering is complete}
+\item{\code{Planned Repower Year}}{Planned effective year that the generator is scheduled to enter operation after the repowering is complete}
+\item{\code{Other Planned Modifications?}}{Indicates whether there are there other modifications planned for the generator}
+\item{\code{Other Modifications Month}}{Planned effective month that the generator is scheduled to enter commercial operation after any other planned modification is complete}
+\item{\code{Other Modifications Year}}{Planned effective year that the generator is scheduled to enter commercial operation after any other planned modofication is complete}
+\item{\code{Cofire Fuels?}}{Can the generator co-fire fuels? (Yes / No)}
+\item{\code{Switch Between Oil and Natural Gas?}}{Indicates whether the generator switch between oil and natural gas(Yes / No)}
 \item{\code{Year}}{Year}
-\item{\code{Technology}}{}
-\item{\code{Turbines or Hydrokinetic Buoys}}{}
-\item{\code{Multiple Fuels?}}{}
+\item{\code{Technology}}{Generator Technology}
+\item{\code{Turbines or Hydrokinetic Buoys}}{Number of wind turbines, or hydrokinetic buoys  }
+\item{\code{Multiple Fuels?}}{Can the generator burn multiple fuels? (Yes/No)}
 }
 }
 \usage{

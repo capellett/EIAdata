@@ -7,17 +7,24 @@
 \format{
 A data frame with twelve variables:
 \describe{
-\item{\code{Utility ID}}{an integer value that identifies each utility}
-\item{\code{Utility Name}}{the name of the utility}
-\item{\code{Street Address}}{}
-\item{\code{City}}{}
-\item{\code{State}}{}
-\item{\code{Zip}}{}
-\item{\code{Owner of Plants Reported on Form?}}{}
-\item{\code{Other Relationships with Plants Reported on Form?}}{}
-\item{\code{Other Relationships with Plants Reported on Form?}}{}
-\item{\code{Entity Type}}{}
-\item{\code{Year}}{Year}
+  \item{\code{Utility ID}}{an integer value that identifies each utility}
+  \item{\code{Utility Name}}{the name of the utility}
+  \item{\code{Street Address}}{Description of the street address}
+  \item{\code{City}}{Description of the city}
+  \item{\code{State}}{Description of the state}
+  \item{\code{Zip}}{Description of the zip code}
+  \item{\code{Owner of Plants Reported on Form?}}{"Y", NA}
+  \item{\code{Operator of Plants Reported on Form?}}{"Y", NA}
+  \item{\code{Asset Manager of Plants Reported on Form?}}{"Y", NA}
+  \item{\code{Other Relationships with Plants Reported on Form?}}{"Y", NA}
+  \item{\code{Entity Type}}{A categorical variable indicating the type of entity
+    that owns and/or operates the plants reported on this form. It includes the following
+    specific values: "IND" (Individual), "Q" (Quarterly), "M" (Monthly), "COM" (Commercial),
+    "C" (Cooperative), "I" (Industrial), NA (Not Available), "P" (Political Subdivision),
+    "F" (Federally-Owned Utility), "S" (State-Owned Utility).
+    Note: The actual values in the dataset may vary and should be verified against
+    the current dataset version. Please see EIA-860 Instructions}
+  \item{\code{Year}}{2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020}
 }
 For further details, see \url{http://www.ssa.gov/oact/NOTES/as120/LifeTables_Body.html#wp1168594}
 }
