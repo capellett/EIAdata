@@ -236,24 +236,59 @@
 #'
 #' @format A data frame with twenty seven variables:
 #' \describe{
-#' \item{\code{PlantID}}{}
-#' \item{\code{Combined Heat and Power}}{}
-#' \item{\code{Plant}}{}
-#' \item{\code{Operator}}{}
-#' \item{\code{OperatorID}}{}
-#' \item{\code{State}}{}
-#' \item{\code{CensusRegion}}{}
-#' \item{\code{NERCRegion}}{}
-#' \item{\code{NAICS}}{}
-#' \item{\code{SectorNumber}}{}
-#' \item{\code{Sector}}{}
-#' \item{\code{GeneratorID}}{}
-#' \item{\code{PrimeMover}}{}
+#' \item{\code{PlantID}}{EIA-assigned plant code}
+#' \item{\code{Combined Heat and Power}}{Indicates whether the generator is associated with a combined heat and power system (Yes/No)}
+#' \item{\code{Plant}}{Plant name}
+#' \item{\code{Operator}}{Is the reporting entity an operator of power plants reported on Schedule 2 of the form?}
+#' \item{\code{OperatorID}}{ID of operator}
+#' \item{\code{State}}{State for owner}
+#' \item{\code{CensusRegion}}{Census Region}
+#' \item{\code{NERCRegion}}{North American Electric Reliability Corporation (NERC)region in which the plant operates}
+#' \item{\code{NAICS}}{North American Industry Classification System (NAICS) code 'that best describes the primary purpose of the plant.Electric utility plants and
+#'independent power producers whose primary purpose is generating electricity for sale will generally use code 22. For generators whose primary business is an industrial or
+#'commercial process (e.g., paper mills, refineries, chemical plants, etc.) and for which generating electricity is a secondary purpose, use a code other than 22.}
+#' \item{\code{SectorNumber}}{Plant-level sector number, designated by the primary purpose, regulatory status and plant-level combined heat and power status"
+#' 1 = Electric Utility
+#' 2 = Independent Power Producer, Non-Combined Heat and Power
+#' 3 = Independent Power Producer, Combined Heat and Power
+#'4 = Commercial, Non-Combined Heat and Power
+#'5 = Commercial, Combined Heat and Power
+#'6 = Industrial, Non-Combined Heat and Power
+#'7 = Industrial, Combined Heat and Power"
+#'}
+#' \item{\code{Sector}}{Plant-level sector name, designated by the primary purpose, regulatory status and plant-level combined heat and power status}
+#' \item{\code{GeneratorID}}{Generator identification number}
+#' \item{\code{PrimeMover}}{EIA assigned code for the prime mover (i.e. the engine, turbine, water wheel, or similar machine that drives an electric generator)
+#' BA	Energy Storage, Battery
+#' CE	Energy Storage, Compressed Air
+#' CP	Energy Storage, Concentrated Solar Power
+#' FW	Energy Storage, Flywheel
+#' PS	Energy Storage, Reversible Hydraulic Turbine (Pumped Storage)
+#' ES	Energy Storage, Other (specify in SCHEDULE 7)
+#' ST	Steam Turbine, including nuclear, geothermal and solar steam (does not include combined cycle)
+#' GT	Combustion (Gas) Turbine (does not include the combustion turbine part of a combined cycle; see code CT, below)
+#' IC	Internal Combustion Engine (diesel, piston, reciprocating)
+#' CA	Combined Cycle Steam Part
+#' CT	Combined Cycle Combustion Turbine Part
+#' CS	Combined Cycle Single Shaft (combustion turbine and steam turbine share a single generator)
+#' CC	Combined Cycle Total Unit (use only for plants/generators that are in planning stage, for which specific generator details cannot be provided)
+#' HA	Hydrokinetic, Axial Flow Turbine
+#' HB	Hydrokinetic, Wave Buoy
+#' HK	Hydrokinetic, Other (specify in SCHEDULE 7)
+#' HY	Hydroelectric Turbine (includes turbines associated with delivery of water by pipeline)
+#' BT	Turbines Used in a Binary Cycle (including those used for geothermal applications)
+#' PV	Photovoltaic
+#' WT	Wind Turbine, Onshore
+#' WS	Wind Turbine, Offshore
+#' FC	Fuel Cell
+#' OT	Other (specify in SCHEDULE 7)
+#' }
 #' \item{\code{Jan ... Dec}}{}
 #' \item{\code{YearToDate}}{}
 #' \item{\code{Year}}{}
 #' \item{\code{Respondent Frequency}}{}
-#' \item{\code{BalancingAuthorityCode}}{}
+#' \item{\code{BalancingAuthorityCode}}{The plant's balancing authority
+#' }
 #' }
 #'
 "net_generation"
@@ -267,7 +302,7 @@
 #' \describe{
 #' \item{\code{Year}}{}
 #' \item{\code{Month}}{}
-#' \item{\code{PlantID}}{}
+#' \item{\code{PlantID}}{EIA-assigned plant code}
 #' \item{\code{CoolingID}}{Cooling system identification number}
 #' \item{\code{CoolingType}}{DC Dry (air) cooling system
 #' (HRC) Hybrid: cooling pond(s) or canal(s) with dry cooling
@@ -316,9 +351,9 @@
 #' @format A data frame with sixty eight variables:
 #' \describe{
 #' \item{\code{Utility ID}}{EIA-assigned identification number for the company that is responsible for the day-to-day operations of the generator}
-#' \item{\code{State}}{}
-#' \item{\code{Plant Code}}{}
-#' \item{\code{Plant Name}}{}
+#' \item{\code{State}}{State of operator}
+#' \item{\code{Plant Code}}{Code of plant}
+#' \item{\code{Plant Name}}{Name of plant}
 #' \item{\code{Year}}{Year}
 #' \item{\code{Month}}{}
 #' \item{\code{Generator ID}}{Generator identification number}
@@ -338,14 +373,14 @@
 #' \item{\code{}}{}
 #' \item{\code{}}{}
 #' \item{\code{}}{}
-#' \item{\code{Coal Consumption (MMBTU)}}{}
-#' \item{\code{Natural Gas Consumption (MMBTU)}}{}
-#' \item{\code{Petroleum Consumption (MMBTU)}}{}
-#' \item{\code{Biomass Consumption (MMBTU)}}{}
-#' \item{\code{Other Gas Consumption (MMBTU)}}{}
-#' \item{\code{Other Fuel Consumption (MMBTU)}}{}
-#' \item{\code{Water Withdrawal Volume (Million Gallons)}}{}
-#' \item{\code{Water Consumption Volume (Million Gallons)}}{}
+#' \item{\code{Coal Consumption (MMBTU)}}{Coal consumed}
+#' \item{\code{Natural Gas Consumption (MMBTU)}}{Natural gas consumed}
+#' \item{\code{Petroleum Consumption (MMBTU)}}{Petroleum consumed}
+#' \item{\code{Biomass Consumption (MMBTU)}}{Biomass consumption}
+#' \item{\code{Other Gas Consumption (MMBTU)}}{Other gas consumption}
+#' \item{\code{Other Fuel Consumption (MMBTU)}}{Fuel consumption}
+#' \item{\code{Water Withdrawal Volume (Million Gallons)}}{Voloume of water withdrawals}
+#' \item{\code{Water Consumption Volume (Million Gallons)}}{Voloume of water consumed}
 #' \item{\code{Water Withdrawal Intensity Rate (Gallons / MWh)}}{}
 #' \item{\code{}}{}
 #' \item{\code{Water Withdrawal Rate per Fuel Consumption (Gallons / MMBTU)}}{}
