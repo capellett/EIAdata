@@ -8,9 +8,9 @@
 A data frame with sixty eight variables:
 \describe{
 \item{\code{Utility ID}}{EIA-assigned identification number for the company that is responsible for the day-to-day operations of the generator}
-\item{\code{State}}{}
-\item{\code{Plant Code}}{}
-\item{\code{Plant Name}}{}
+\item{\code{State}}{State of operator}
+\item{\code{Plant Code}}{Code of plant}
+\item{\code{Plant Name}}{Name of plant}
 \item{\code{Year}}{Year}
 \item{\code{Month}}{}
 \item{\code{Generator ID}}{Generator identification number}
@@ -30,14 +30,14 @@ A data frame with sixty eight variables:
 \item{\code{}}{}
 \item{\code{}}{}
 \item{\code{}}{}
-\item{\code{Coal Consumption (MMBTU)}}{}
-\item{\code{Natural Gas Consumption (MMBTU)}}{}
-\item{\code{Petroleum Consumption (MMBTU)}}{}
-\item{\code{Biomass Consumption (MMBTU)}}{}
-\item{\code{Other Gas Consumption (MMBTU)}}{}
-\item{\code{Other Fuel Consumption (MMBTU)}}{}
-\item{\code{Water Withdrawal Volume (Million Gallons)}}{}
-\item{\code{Water Consumption Volume (Million Gallons)}}{}
+\item{\code{Coal Consumption (MMBTU)}}{Coal consumed}
+\item{\code{Natural Gas Consumption (MMBTU)}}{Natural gas consumed}
+\item{\code{Petroleum Consumption (MMBTU)}}{Petroleum consumed}
+\item{\code{Biomass Consumption (MMBTU)}}{Biomass consumption}
+\item{\code{Other Gas Consumption (MMBTU)}}{Other gas consumption}
+\item{\code{Other Fuel Consumption (MMBTU)}}{Fuel consumption}
+\item{\code{Water Withdrawal Volume (Million Gallons)}}{Voloume of water withdrawals}
+\item{\code{Water Consumption Volume (Million Gallons)}}{Voloume of water consumed}
 \item{\code{Water Withdrawal Intensity Rate (Gallons / MWh)}}{}
 \item{\code{}}{}
 \item{\code{Water Withdrawal Rate per Fuel Consumption (Gallons / MMBTU)}}{}

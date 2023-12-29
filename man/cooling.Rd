@@ -9,7 +9,7 @@ A data frame with twenty two variables:
 \describe{
 \item{\code{Year}}{}
 \item{\code{Month}}{}
-\item{\code{PlantID}}{}
+\item{\code{PlantID}}{EIA-assigned plant code}
 \item{\code{CoolingID}}{Cooling system identification number}
 \item{\code{CoolingType}}{DC Dry (air) cooling system
 (HRC) Hybrid: cooling pond(s) or canal(s) with dry cooling
