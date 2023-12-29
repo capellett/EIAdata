@@ -7,16 +7,16 @@
 \format{
 A data frame with sixty eight variables:
 \describe{
-\item{\code{Utility ID}}{}
+\item{\code{Utility ID}}{EIA-assigned identification number for the company that is responsible for the day-to-day operations of the generator}
 \item{\code{State}}{}
 \item{\code{Plant Code}}{}
 \item{\code{Plant Name}}{}
 \item{\code{Year}}{Year}
 \item{\code{Month}}{}
-\item{\code{Generator ID}}{}
-\item{\code{Boiler ID}}{}
-\item{\code{Cooling ID}}{}
-\item{\code{Generator Primary Technology}}{}
+\item{\code{Generator ID}}{Generator identification number}
+\item{\code{Boiler ID}}{Boiler identification number}
+\item{\code{Cooling ID}}{Cooling system identification number}
+\item{\code{Generator Primary Technology}}{High level description of the technology used by the generator to produce electricity}
 \item{\code{Summer Capacity of Steam Turbines (MW)}}{}
 \item{\code{Gross Generation from Steam Turbines (MWh)}}{}
 \item{\code{Net Generation from Steam Turbines (MWh)}}{}
@@ -44,28 +44,58 @@ A data frame with sixty eight variables:
 \item{\code{}}{}
 \item{\code{Cooling Unit Hours in Service}}{}
 \item{\code{Average Distance of Water Intake Below Water Surface (Feet)}}{}
-\item{\code{860 Cooling Type 1}}{}
-\item{\code{860 Cooling Type 2}}{}
+\item{\code{860 Cooling Type 1}}{Type of cooling system}
+\item{\code{860 Cooling Type 2}}{Type of cooling system}
 \item{\code{923 Cooling Type}}{}
-\item{\code{Cooling System Type}}{}
-\item{\code{Water Type}}{}
-\item{\code{Water Source}}{}
-\item{\code{Water Source Name}}{}
-\item{\code{Water Discharge Name}}{}
+\item{\code{Cooling System Type}}
+\item{\code{Water Type}}{Type of cooling water (BR)	Brackish Water
+(FR)	Fresh Water
+(BE)	Reclaimed Water (ex: treated wastewater effluent)
+(SA)	Saline Water
+(OT)	Other (specify in SCHEDULE 7)
+}
+\item{\code{Water Source}}{(SW)	Surface Water (ex: river, canal, bay)
+(GW)	Ground Water (ex: aquifer, well)
+(PD)	Plant Discharge Water (ex: wastewater treatment plant discharge)
+(OT)	Other (specify in SCHEDULE 7)
+}
+\item{\code{Water Source Name}}{Name of river, lake, or water source that provides cooling water}
+\item{\code{Water Discharge Name}}{Name of river, lake, or water source that cooling water is discharged into.}
 \item{\code{Generator Status}}{}
 \item{\code{Generator Inservice Month}}{}
 \item{\code{Generator Inservice Year}}{}
 \item{\code{Generator Retirement Month}}{}
 \item{\code{Generator Retirement Year}}{}
-\item{\code{Boiler Status}}{}
+\item{\code{Boiler Status}}{
+CN	Cancelled (previously reported as “planned”)
+CO	New unit under construction
+OP	Operating (in commercial service or out of service less than 365 days)
+OS	Out of service (365 days or longer)
+PL	Planned (expected to go into commercial service within 10 years)
+RE	Retired (no longer in service and not expected to be returned to service)
+SB	Standby (or inactive reserve); i.e., not normally used, but available for service
+SC	Cold Standby (Reserve); deactivated (usually requires 3 to 6 months to reactivate)
+TS	Operating under test conditions (not in commercial service)
+}
 \item{\code{Boiler Inservice Month}}{}
 \item{\code{Boiler Inservice Year}}{}
 \item{\code{Boiler Retirement Month}}{}
 \item{\code{Boiler Retirement Year}}{}
-\item{\code{Cooling Status}}{}
-\item{\code{Cooling Inservice Month}}{}
-\item{\code{Cooling Inservice Year}}{}
-\item{\code{Combined Heat and Power Generator?}}{}
+\item{\code{Cooling Status}}{
+CN	Cancelled (previously reported as “planned”)
+CO	New unit under construction
+OP	Operating (in commercial service or out of service less than 365 days)
+OS	Out of service (365 days or longer)
+PL	Planned (expected to go into commercial service within 10 years)
+RE	Retired (no longer in service and not expected to be returned to service)
+SB	Standby (or inactive reserve); i.e., not normally used, but available for service)
+SC	Cold Standby (Reserve); deactivated (usually requires 3 to 6 months to reactivate)
+TS	Operating under test conditions (not in commercial service)
+}
+
+\item{\code{Cooling Inservice Month}}{The actual or projected in-service month of this cooling system}
+\item{\code{Cooling Inservice Year}}{The actual or projected in-service month of this cooling system}
+\item{\code{Combined Heat and Power Generator?}}{Indicates whether the generator is associated with a combined heat and power system (Yes/No)}
 \item{\code{}}{}
 }
 }

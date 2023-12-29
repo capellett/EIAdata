@@ -10,9 +10,27 @@ A data frame with twenty two variables:
 \item{\code{Year}}{}
 \item{\code{Month}}{}
 \item{\code{PlantID}}{}
-\item{\code{CoolingID}}{}
-\item{\code{CoolingType}}{}
-\item{\code{CoolingStatus}}{}
+\item{\code{CoolingID}}{Cooling system identification number}
+\item{\code{CoolingType}}{DC Dry (air) cooling system
+(HRC) Hybrid: cooling pond(s) or canal(s) with dry cooling
+(HRF) Hybrid: forced draft cooling tower(s) with dry cooling
+(HRI) Hybrid: induced draft cooling tower(s) with dry cooling
+(OC) Once through with cooling pond(s)
+(ON) Once through without cooling pond(s)
+(RC) Recirculating with cooling pond(s) or canal(s)
+(RF) Recirculating with forced draft cooling tower(s)
+(RI) Recirculating with induced draft cooling tower(s)
+(RN) Recirculating with natural draft cooling tower(s)
+(HT) Helper Tower
+(OT) Other (specify in SCHEDULE 7)}
+
+\item{\code{CoolingStatus}}{Cooling system status: Type of cooling system [CN] Cancelled (previously reported as “planned”)
+(CO) New unit under construction, (OP) Operating (in commercial service or out of service less than 365 days)
+(OS) Out of service (365 days or longer), (PL) Planned (expected to go into commercial service within 10 years)
+(RE) Retired (no longer in service and not expected to be returned to service)
+(SB) Standby (or inactive reserve); i.e., not normally used, but available for service)
+(SC) Cold Standby (Reserve); deactivated (usually requires 3 to 6 months to reactivate)
+(TS) Operating under test conditions (not in commercial service)}
 \item{\code{HoursInService}}{}
 \item{\code{Chlorine (thousand lbs)}}{}
 \item{\code{Diversion (gpm)}}{}
