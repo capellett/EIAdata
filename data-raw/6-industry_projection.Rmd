@@ -1,0 +1,254 @@
+---
+title: "Manufacturing Projections"
+author: "C A Pellett"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+
+# Projections of Economic Growth
+
+```{r industry_proj_read}
+getwd()
+
+i_proj0 <- readxl::read_excel(
+  "macroeconomic//year2023_Table_23._Industrial_Sector_Macroeconomic_Indicators.xlsx")
+```
+
+
+```{r}
+i_proj1 <- i_proj0  %>%
+  dplyr::rename(AGR = 'Growth (2022-2050)')
+```
+The US Energy Information Agency develops projections of the annual value of shipments for different industrial sectors out to the year 2050. Values are expressed in billions of 2009 US dollars. The projected growth rates are not uniform across the projection horizon, but the average annual growth rate (AGR) is also included for each sector. 
+
+The excel file "Table_23_Industrial_Sector_Macroeconomic_Indicators.xlsx" was downloaded from the US EIA website. The raw table has been reformatted in excel to facilitate its use in R. Additional worksheets are included in the excel workbook, as documented in the worksheet labelled "readme".
+
+## Set negative growth to zero growth
+```{r replace-negative-growth)}
+i_proj2 <- i_proj1 %>%
+  dplyr::mutate(
+    dplyr::across(`2022`:`2050`, function(x) {
+      dplyr::if_else(AGR < 0, `2022`, x) }) )
+
+# min(industry_proj$AGR, na.rm=T)
+```
+For some sectors, the projected AGR is negative. For a projection of moderate growth in water demand, projections of negative economic growth are replaced with zero growth from 2021 to 2050.
+
+## Extend to 2070
+```{r extend-manufacturing-projections}
+i_proj3 <- i_proj2%>%
+  dplyr::mutate(AGR = dplyr::if_else(AGR<0, 0.003, AGR)) %>%
+    dplyr::mutate(`2051` = `2050` * (1+AGR),
+                `2052` = `2050` * ((1+AGR)^2),
+                `2053` = `2050` * ((1+AGR)^3),
+                `2054` = `2050` * ((1+AGR)^4),
+                `2055` = `2050` * ((1+AGR)^5),
+                `2056` = `2050` * ((1+AGR)^6),
+                `2057` = `2050` * ((1+AGR)^7),
+                `2058` = `2050` * ((1+AGR)^8),
+                `2059` = `2050` * ((1+AGR)^9),
+                `2060` = `2050` * ((1+AGR)^10),
+                `2061` = `2050` * ((1+AGR)^11),
+                `2062` = `2050` * ((1+AGR)^12),
+                `2063` = `2050` * ((1+AGR)^13),
+                `2064` = `2050` * ((1+AGR)^14),
+                `2065` = `2050` * ((1+AGR)^15),
+                `2066` = `2050` * ((1+AGR)^16),
+                `2067` = `2050` * ((1+AGR)^17),
+                `2068` = `2050` * ((1+AGR)^18),
+                `2069` = `2050` * ((1+AGR)^19),
+                `2070` = `2050` * ((1+AGR)^20)) %>%
+  dplyr::select(Type, Sector, Subsector, AGR_mod=AGR, dplyr::everything())
+
+```
+The manufacturing projections are extended from 2050 to 2070 by compounding the AGR. For the extended time period, negative AGR values are replaced with 0.3%, which is the lowest positive growth value among the projected sectors.
+
+## Calculate Relative Values
+```{r}
+i_proj4 <- i_proj3 %>%
+  dplyr::mutate(
+    dplyr::across(`2022`:`2070`, function(x) x/`2022`))
+
+```
+The projections are translated to relative values by dividing the annual values by the values for 2020. 
+
+## Increase Growth for High Demand Projection
+```{r}
+i_proj5 <- i_proj4 %>%
+  dplyr::mutate(AGR_hi = dplyr::if_else(AGR_mod > 0.021, AGR_mod*1.1, 0.021)) %>%
+  tidyr::gather("Year", "Driver_Moderate", `2022`:`2070`) %>%
+  dplyr::mutate(
+    Year = as.integer(Year),
+    Driver_High = (1+AGR_hi)^(Year-2021))
+
+```
+For the high demand scenario, moderate AGRs that are less than 2.1% are replaced with 2.1%. If the moderate scenario AGR for a manufacturing sector is greater than 2.1%, then the AGR is increased by 10% for the high growth scenario. For example, if the moderate AGR is 3%, then the high AGR would be 3.3%.
+
+```{r eval=F}
+## Cache the old edition of industry projections, for later comparison.
+
+# load("~/Rpackages/scwaterdemand/data/i_proj.rda")
+# i_proj_old <- i_proj
+# usethis::use_data(i_proj_old)
+
+```
+
+
+```{r}
+i_proj <- i_proj5
+usethis::use_data(i_proj, overwrite=T)
+```
+
+
+# Join the Withdrawal Systems
+```{r eval=F}
+## This code chunk sets up the analyst to do some manual joins in MS Excel.
+load("~/Rpackages/scwaterdemand/data/wsystems.rda")
+
+wsystems_mnf <- dplyr::filter(wsystems, Sector=='Manufacturing') %>%
+  tidyr::unnest('Basins')
+## Copy this table in to Table_23_Macroeconomic_Indicators.xlsx 
+## (permits_sector worksheet)
+## And join the manufacturers to the industrial sectors
+```
+A table of the manufacturing withdrawal systems has been pasted in to the Macroeconomic Indicators excel file. Manufacturing withdrawal systems were matched to industrial sectors by conducting an internet search for a description of the manufacturing plant and joining the appropriate industrial subsector manually in MS Excel. Because the withdrawal system IDs can change as the water demands are updated for each basin, subsector labels are joined to the permit IDs.
+
+```{r}
+load("~/Rpackages/scwaterdemand/data/permit_system_joins.rda")
+
+# manuf_sectors <- readxl::read_excel(
+#   "Table_23_Industrial_Sector_Macroeconomic_Indicators.xlsx", 
+#   sheet="permits_sector") %>%
+#   dplyr::select(`Industrial Sector`, Subsector, Description, PermitID) %>%
+#   dplyr::left_join(permit_system_joins, "PermitID") %>%
+#   dplyr::select(-PermitID) %>%
+#   unique()
+
+## the projections are updated in year2023, but I assigned sectors earlier...
+manuf_sectors <- readxl::read_excel(
+  "macroeconomic//year2021_Table_23_Industrial_Sector_Macroeconomic_Indicators.xlsx", 
+  sheet="manuf_wsystems") %>%
+  dplyr::select(`Industrial Sector`, Subsector, Description, permits) %>%
+  dplyr::filter(!is.na(`Industrial Sector`)) %>%
+  dplyr::rowwise() %>%
+  dplyr::mutate(PermitID = stringr::str_split(permits, pattern=',')) %>%
+  tidyr::unnest(cols=c(PermitID)) %>%
+  dplyr::left_join(permit_system_joins, 'PermitID') %>%
+  dplyr::select(W_SystemID, `Industrial Sector`, Subsector) %>%
+  unique() 
+
+  # dplyr::left_join(permit_system_joins, "PermitID") %>%
+  # dplyr::select(-PermitID) %>%
+  # unique()
+```
+
+## Test that each withdrawal system is assigned to a single sector
+```{r}
+dplyr::filter(manuf_sectors, scutils::duplicated2(W_SystemID))
+## zero rows, good.
+
+## TODO : test that each permit in the permits_sector table successfully joined to a sector
+## well, it was a left join, so there would be an NA
+sum(is.na(manuf_sectors$W_SystemID))
+
+```
+
+
+
+```{r}
+usethis::use_data(manuf_sectors, overwrite=T)
+```
+
+# Project Water Demand
+```{r}
+load("~/Rpackages/scwaterdemand/data/wsystems.rda")
+
+load("~/Rpackages/scwaterdemand/data/wsystems_basic_cal.rda")
+```
+
+```{r}
+wsystems_manf_proj1 <- wsystems %>%
+  dplyr::filter(Sector == "Manufacturing") %>%
+  dplyr::left_join(manuf_sectors, by="W_SystemID") %>%
+  dplyr::left_join(wsystems_basic_cal, by="W_SystemID") %>%
+  dplyr::left_join(i_proj, by=c("Industrial Sector"="Sector", "Subsector")) %>%
+  dplyr::select(W_SystemID, W_Name, Year, Rate:High_Factor_Dec, 
+                Driver_Moderate, Driver_High) %>%
+  dplyr::filter(!is.na(Year))
+
+```
+
+```{r}
+wsystems_manf_proj2 <- wsystems_manf_proj1 %>%
+  tidyr::pivot_longer(
+    cols=Moderate_Factor_Jan:High_Factor_Dec,
+    names_to=c("DemandScenario", "Month"),
+    names_pattern="(.*)_Factor_(.*)",
+    values_to="Month_factor") %>%
+  tidyr::pivot_longer(
+    cols=Driver_Moderate:Driver_High,
+    names_to="GrowthScenario",
+    names_prefix='Driver_',
+    values_to='Driver') %>%
+  # dplyr::filter(Scenario == Scenario2) %>%
+  # dplyr::select(-Scenario2) %>%
+  dplyr::mutate(
+    MGM = Rate*Driver*Month_factor,
+    Date = lubridate::mdy(paste0(Month, ' 1, ', Year)),
+    Scenario = dplyr::case_when(
+      DemandScenario == 'Moderate' & GrowthScenario == 'Moderate' ~ 'Moderate',
+      DemandScenario == 'Moderate' & GrowthScenario == 'High' ~ 'HighGrowth',
+      DemandScenario == 'High' & GrowthScenario == 'High' ~ 'HighDemand')) 
+
+# dplyr::filter(wsystems_manf_proj2, is.na(Scenario)) %>%
+#   dplyr::select(DemandScenario, GrowthScenario) %>%
+#   unique() ## looks correct
+
+wsystems_manf_proj <- wsystems_manf_proj2 %>%
+  dplyr::select(W_SystemID, Date, MGM, Scenario) %>%
+  dplyr::filter(!is.na(Scenario))
+```
+
+Water demand for the manufacturing sector is projected by joining the manufacturing withdrawal systems table to the manufacturing sectors table, the basic calibration table, and the industrial projections table. Then the water demands are calculated as the median rate of withdrawal multiplied by the projected economic growth and the monthly factor (for both moderate and high demand).
+
+```{r}
+usethis::use_data(wsystems_manf_proj, overwrite=T)
+```
+
+
+
+```{r eval=F}
+## This portion is older. It uses NAIC sectors from the NPDES database.
+
+## The industry_joins table was created manually by labelling the unique 
+## values of 'Kind' of water use with a corresponding NAIC Sector.
+industry_joins <- readxl::read_excel(
+  "Industrial_Sector_Macroeconomic_Indicators.xls", sheet=3)
+
+# x <- dplyr::anti_join(i_proj_update, industry_joins, "Sector")
+# unique(x$Sector)
+# y <- dplyr::anti_join(industry_joins, i_proj_update, "Sector")
+### The manually created join table isn't necessarily good.
+# 
+# x <- dplyr::anti_join(i_proj, industry_joins, "Sector")
+# unique(x$Sector)
+# y <- dplyr::anti_join(industry_joins, i_proj, "Sector")
+### but the update doesn't seem to have changed anything.
+
+industry_proj <- dplyr::full_join(i_proj, industry_joins, "Sector")
+## Todo: join the labels to the permits and reports.
+
+
+# usethis::use_data(industry_proj, overwrite=TRUE)
+```
+
+
+
+
+

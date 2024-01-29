@@ -6,6 +6,15 @@
 \usage{
 paste_columns(df, columns, new_col = "new_col", collapse = "; ")
 }
+\arguments{
+\item{df}{dataframe}
+
+\item{columns}{columns}
+
+\item{new_col}{the new column name}
+
+\item{collapse}{string to separate the values.}
+}
 \description{
 Create a column by pasting multiple columns together
 }

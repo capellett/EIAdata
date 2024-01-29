@@ -13,17 +13,17 @@ A data frame with seventy five variables:
 \item{\code{County}}{}
 \item{\code{Generator ID}}{The unique generator identification commonly used by plant management.}
 \item{\code{Prime Mover}}{The prime mover codes. Prime Mover Code Prime Mover Description
-BA Energy Storage, Battery
-CE Energy Storage, Compressed Air
-CP Energy Storage, Concentrated Solar Power
-FW Energy Storage, Flywheel
-PS Energy Storage, Reversible Hydraulic Turbine (Pumped Storage)
-ES Energy Storage, Other (specify in SCHEDULE 7)
-ST Steam Turbine, including nuclear, geothermal and solar steam (does not include combined cycle)
-GT Combustion (Gas) Turbine (does not include the combustion turbine part of a combined cycle; see code CT, below)
-IC Internal Combustion Engine (diesel, piston, reciprocating)
-CA Combined Cycle Steam Part
-CT Combined Cycle Combustion Turbine Part
+   BA Energy Storage, Battery
+   CE Energy Storage, Compressed Air
+   CP Energy Storage, Concentrated Solar Power
+   FW Energy Storage, Flywheel
+   PS Energy Storage, Reversible Hydraulic Turbine (Pumped Storage)
+  ES Energy Storage, Other (specify in SCHEDULE 7)
+  ST Steam Turbine, including nuclear, geothermal and solar steam (does not include combined cycle)
+  GT Combustion (Gas) Turbine (does not include the combustion turbine part of a combined cycle; see code CT, below)
+ IC Internal Combustion Engine (diesel, piston, reciprocating)
+ CA Combined Cycle Steam Part
+ CT Combined Cycle Combustion Turbine Part
 CS Combined Cycle Single Shaft (combustion turbine and steam turbine share a single generator)
 CC Combined Cycle Total Unit (use only for plants/generators that are in planning stage, for which specific generator details cannot be provided)
 HA Hydrokinetic, Axial Flow Turbine

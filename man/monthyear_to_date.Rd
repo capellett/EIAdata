@@ -2,7 +2,7 @@
 % Please edit documentation in R/compile.R
 \name{monthyear_to_date}
 \alias{monthyear_to_date}
-\title{Convert (and drop) month and year columns to a data column}
+\title{Convert (and drop) month and year columns to a date column}
 \usage{
 monthyear_to_date(
   df,
@@ -22,5 +22,5 @@ monthyear_to_date(
 \item{datecol}{length 1 character vector name of the year column.}
 }
 \description{
-Convert (and drop) month and year columns to a data column
+Convert month and year to date
 }
