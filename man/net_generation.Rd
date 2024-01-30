@@ -3,9 +3,16 @@
 \docType{data}
 \name{net_generation}
 \alias{net_generation}
-\title{Net Generation}
+\title{net_generation}
 \format{
-A data frame with twenty seven variables:
+A dataframe with 34954 rows and 29 columns.
+}
+\usage{
+net_generation
+}
+\description{
+Net monthly electricity generation in MWh over the years 2012-2020. From EIA Form 923, Page 4.
+
 \describe{
 \item{\code{PlantID}}{EIA-assigned plant code}
 \item{\code{Combined Heat and Power}}{Indicates whether the generator is associated with a combined heat and power system (Yes/No)}
@@ -18,55 +25,53 @@ A data frame with twenty seven variables:
 \item{\code{NAICS}}{North American Industry Classification System (NAICS) code 'that best describes the primary purpose of the plant.Electric utility plants and
 independent power producers whose primary purpose is generating electricity for sale will generally use code 22. For generators whose primary business is an industrial or
 commercial process (e.g., paper mills, refineries, chemical plants, etc.) and for which generating electricity is a secondary purpose, use a code other than 22.}
-\item{\code{SectorNumber}}{Plant-level sector number, designated by the primary purpose, regulatory status and plant-level combined heat and power status"
-1 = Electric Utility
-2 = Independent Power Producer, Non-Combined Heat and Power
-3 = Independent Power Producer, Combined Heat and Power
-4 = Commercial, Non-Combined Heat and Power
-5 = Commercial, Combined Heat and Power
-6 = Industrial, Non-Combined Heat and Power
-7 = Industrial, Combined Heat and Power"
+\item{\code{SectorNumber}}{Plant-level sector number, designated by the primary purpose, regulatory status, and plant-level combined heat and power status:
+  \tabular{ll}{
+    Number \tab Description \cr
+    1 \tab Electric Utility \cr
+    2 \tab Independent Power Producer, Non-Combined Heat and Power \cr
+    3 \tab Independent Power Producer, Combined Heat and Power \cr
+    4 \tab Commercial, Non-Combined Heat and Power \cr
+    5 \tab Commercial, Combined Heat and Power \cr
+    6 \tab Industrial, Non-Combined Heat and Power \cr
+    7 \tab Industrial, Combined Heat and Power \cr
+  }
 }
 \item{\code{Sector}}{Plant-level sector name, designated by the primary purpose, regulatory status and plant-level combined heat and power status}
 \item{\code{GeneratorID}}{Generator identification number}
-\item{\code{PrimeMover}}{EIA assigned code for the prime mover (i.e. the engine, turbine, water wheel, or similar machine that drives an electric generator)
-BA	Energy Storage, Battery
-CE	Energy Storage, Compressed Air
-CP	Energy Storage, Concentrated Solar Power
-FW	Energy Storage, Flywheel
-PS	Energy Storage, Reversible Hydraulic Turbine (Pumped Storage)
-ES	Energy Storage, Other (specify in SCHEDULE 7)
-ST	Steam Turbine, including nuclear, geothermal and solar steam (does not include combined cycle)
-GT	Combustion (Gas) Turbine (does not include the combustion turbine part of a combined cycle; see code CT, below)
-IC	Internal Combustion Engine (diesel, piston, reciprocating)
-CA	Combined Cycle Steam Part
-CT	Combined Cycle Combustion Turbine Part
-CS	Combined Cycle Single Shaft (combustion turbine and steam turbine share a single generator)
-CC	Combined Cycle Total Unit (use only for plants/generators that are in planning stage, for which specific generator details cannot be provided)
-HA	Hydrokinetic, Axial Flow Turbine
-HB	Hydrokinetic, Wave Buoy
-HK	Hydrokinetic, Other (specify in SCHEDULE 7)
-HY	Hydroelectric Turbine (includes turbines associated with delivery of water by pipeline)
-BT	Turbines Used in a Binary Cycle (including those used for geothermal applications)
-PV	Photovoltaic
-WT	Wind Turbine, Onshore
-WS	Wind Turbine, Offshore
-FC	Fuel Cell
-OT	Other (specify in SCHEDULE 7)
+\item{\code{PrimeMover}}{EIA assigned code for the prime mover (i.e., the engine, turbine, water wheel, or similar machine that drives an electric generator):
+  \tabular{ll}{
+    Code \tab Description \cr
+    BA \tab Energy Storage, Battery \cr
+    CE \tab Energy Storage, Compressed Air \cr
+    CP \tab Energy Storage, Concentrated Solar Power \cr
+    FW \tab Energy Storage, Flywheel \cr
+    PS \tab Energy Storage, Reversible Hydraulic Turbine (Pumped Storage) \cr
+    ES \tab Energy Storage, Other (specify in SCHEDULE 7) \cr
+    ST \tab Steam Turbine, including nuclear, geothermal and solar steam (does not include combined cycle) \cr
+    GT \tab Combustion (Gas) Turbine (does not include the combustion turbine part of a combined cycle; see code CT, below) \cr
+    IC \tab Internal Combustion Engine (diesel, piston, reciprocating) \cr
+    CA \tab Combined Cycle Steam Part \cr
+    CT \tab Combined Cycle Combustion Turbine Part \cr
+    CS \tab Combined Cycle Single Shaft (combustion turbine and steam turbine share a single generator) \cr
+    CC \tab Combined Cycle Total Unit (use only for plants/generators that are in planning stage, for which specific generator details cannot be provided) \cr
+    HA \tab Hydrokinetic, Axial Flow Turbine \cr
+    HB \tab Hydrokinetic, Wave Buoy \cr
+    HK \tab Hydrokinetic, Other (specify in SCHEDULE 7) \cr
+    HY \tab Hydroelectric Turbine (includes turbines associated with delivery of water by pipeline) \cr
+    BT \tab Turbines Used in a Binary Cycle (including those used for geothermal applications) \cr
+    PV \tab Photovoltaic \cr
+    WT \tab Wind Turbine, Onshore \cr
+    WS \tab Wind Turbine, Offshore \cr
+    FC \tab Fuel Cell \cr
+    OT \tab Other (specify in SCHEDULE 7) \cr
+  }
 }
 \item{\code{Jan ... Dec}}{}
 \item{\code{YearToDate}}{}
 \item{\code{Year}}{}
 \item{\code{Respondent Frequency}}{}
-\item{\code{BalancingAuthorityCode}}{The plant's balancing authority
+\item{\code{BalancingAuthorityCode}}{The plant's balancing authority}
 }
-}
-}
-\usage{
-net_generation
-}
-\description{
-Net monthly electricity generation in MWh over the years 2012-2020.
-From EIA Form 923, Page 4.
 }
 \keyword{datasets}

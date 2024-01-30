@@ -3,9 +3,15 @@
 \docType{data}
 \name{cooling_detail}
 \alias{cooling_detail}
-\title{Detailed cooling information}
+\title{cooling_detail}
 \format{
-A data frame with sixty eight variables:
+A dataframe with 584820 rows and 70 columns.
+}
+\usage{
+cooling_detail
+}
+\description{
+Detailed cooling information.
 \describe{
 \item{\code{Utility ID}}{EIA-assigned identification number for the company that is responsible for the day-to-day operations of the generator}
 \item{\code{State}}{State of operator}
@@ -23,41 +29,41 @@ A data frame with sixty eight variables:
 \item{\code{Summer Capacity Associated with Single Shaft Combined Cycle Units (MW)}}{}
 \item{\code{Gross Generation Associated with Single Shaft Combined Cycle Units (MWh)}}{}
 \item{\code{Net Generation Associated with Single Shaft Combined Cycle Units (MWh)}}{}
-\item{\code{}}{}
-\item{\code{}}{}
-\item{\code{}}{}
 \item{\code{Fuel Consumption from All Fuel Types (MMBTU)}}{}
-\item{\code{}}{}
-\item{\code{}}{}
-\item{\code{}}{}
 \item{\code{Coal Consumption (MMBTU)}}{Coal consumed}
 \item{\code{Natural Gas Consumption (MMBTU)}}{Natural gas consumed}
 \item{\code{Petroleum Consumption (MMBTU)}}{Petroleum consumed}
 \item{\code{Biomass Consumption (MMBTU)}}{Biomass consumption}
 \item{\code{Other Gas Consumption (MMBTU)}}{Other gas consumption}
 \item{\code{Other Fuel Consumption (MMBTU)}}{Fuel consumption}
-\item{\code{Water Withdrawal Volume (Million Gallons)}}{Voloume of water withdrawals}
-\item{\code{Water Consumption Volume (Million Gallons)}}{Voloume of water consumed}
+\item{\code{Water Withdrawal Volume (Million Gallons)}}{Volume of water withdrawals}
+\item{\code{Water Consumption Volume (Million Gallons)}}{Volume of water consumed}
 \item{\code{Water Withdrawal Intensity Rate (Gallons / MWh)}}{}
-\item{\code{}}{}
 \item{\code{Water Withdrawal Rate per Fuel Consumption (Gallons / MMBTU)}}{}
-\item{\code{}}{}
 \item{\code{Cooling Unit Hours in Service}}{}
 \item{\code{Average Distance of Water Intake Below Water Surface (Feet)}}{}
 \item{\code{860 Cooling Type 1}}{Type of cooling system}
 \item{\code{860 Cooling Type 2}}{Type of cooling system}
 \item{\code{923 Cooling Type}}{}
-\item{\code{Cooling System Type}}
-\item{\code{Water Type}}{Type of cooling water (BR)	Brackish Water
-(FR)	Fresh Water
-(BE)	Reclaimed Water (ex: treated wastewater effluent)
-(SA)	Saline Water
-(OT)	Other (specify in SCHEDULE 7)
+\item{\code{Cooling System Type}}{}
+\item{\code{Water Type}}{
+  \tabular{ll}{
+    Code \tab Description \cr
+    BR \tab Brackish Water \cr
+    FR \tab Fresh Water \cr
+    BE \tab Reclaimed Water (ex: treated wastewater effluent) \cr
+    SA \tab Saline Water \cr
+    OT \tab Other (specify in SCHEDULE 7) \cr
+  }
 }
-\item{\code{Water Source}}{(SW)	Surface Water (ex: river, canal, bay)
-(GW)	Ground Water (ex: aquifer, well)
-(PD)	Plant Discharge Water (ex: wastewater treatment plant discharge)
-(OT)	Other (specify in SCHEDULE 7)
+\item{\code{Water Source}}{
+  \tabular{ll}{
+    Code \tab Description \cr
+    SW \tab Surface Water (ex: river, canal, bay) \cr
+    GW \tab Ground Water (ex: aquifer, well) \cr
+    PD \tab Plant Discharge Water (ex: wastewater treatment plant discharge) \cr
+    OT \tab Other (specify in SCHEDULE 7) \cr
+  }
 }
 \item{\code{Water Source Name}}{Name of river, lake, or water source that provides cooling water}
 \item{\code{Water Discharge Name}}{Name of river, lake, or water source that cooling water is discharged into.}
@@ -67,42 +73,40 @@ A data frame with sixty eight variables:
 \item{\code{Generator Retirement Month}}{}
 \item{\code{Generator Retirement Year}}{}
 \item{\code{Boiler Status}}{
-CN	Cancelled (previously reported as “planned”)
-CO	New unit under construction
-OP	Operating (in commercial service or out of service less than 365 days)
-OS	Out of service (365 days or longer)
-PL	Planned (expected to go into commercial service within 10 years)
-RE	Retired (no longer in service and not expected to be returned to service)
-SB	Standby (or inactive reserve); i.e., not normally used, but available for service
-SC	Cold Standby (Reserve); deactivated (usually requires 3 to 6 months to reactivate)
-TS	Operating under test conditions (not in commercial service)
+  \tabular{ll}{
+    Code \tab Description \cr
+    CN \tab Cancelled (previously reported as “planned”) \cr
+    CO \tab New unit under construction \cr
+    OP \tab Operating (in commercial service or out of service less than 365 days) \cr
+    OS \tab Out of service (365 days or longer) \cr
+    PL \tab Planned (expected to go into commercial service within 10 years) \cr
+    RE \tab Retired (no longer in service and not expected to be returned to service) \cr
+    SB \tab Standby (or inactive reserve); i.e., not normally used, but available for service \cr
+    SC \tab Cold Standby (Reserve); deactivated (usually requires 3 to 6 months to reactivate) \cr
+    TS \tab Operating under test conditions (not in commercial service) \cr
+  }
 }
 \item{\code{Boiler Inservice Month}}{}
 \item{\code{Boiler Inservice Year}}{}
 \item{\code{Boiler Retirement Month}}{}
 \item{\code{Boiler Retirement Year}}{}
 \item{\code{Cooling Status}}{
-CN	Cancelled (previously reported as “planned”)
-CO	New unit under construction
-OP	Operating (in commercial service or out of service less than 365 days)
-OS	Out of service (365 days or longer)
-PL	Planned (expected to go into commercial service within 10 years)
-RE	Retired (no longer in service and not expected to be returned to service)
-SB	Standby (or inactive reserve); i.e., not normally used, but available for service)
-SC	Cold Standby (Reserve); deactivated (usually requires 3 to 6 months to reactivate)
-TS	Operating under test conditions (not in commercial service)
+  \tabular{ll}{
+    Code \tab Description \cr
+    CN \tab Cancelled (previously reported as “planned”) \cr
+    CO \tab New unit under construction \cr
+    OP \tab Operating (in commercial service or out of service less than 365 days) \cr
+    OS \tab Out of service (365 days or longer) \cr
+    PL \tab Planned (expected to go into commercial service within 10 years) \cr
+    RE \tab Retired (no longer in service and not expected to be returned to service) \cr
+    SB \tab Standby (or inactive reserve); i.e., not normally used, but available for service \cr
+    SC \tab Cold Standby (Reserve); deactivated (usually requires 3 to 6 months to reactivate) \cr
+    TS \tab Operating under test conditions (not in commercial service) \cr
+  }
 }
-
 \item{\code{Cooling Inservice Month}}{The actual or projected in-service month of this cooling system}
 \item{\code{Cooling Inservice Year}}{The actual or projected in-service month of this cooling system}
 \item{\code{Combined Heat and Power Generator?}}{Indicates whether the generator is associated with a combined heat and power system (Yes/No)}
-\item{\code{}}{}
 }
-}
-\usage{
-cooling_detail
-}
-\description{
-Net monthly electricity generation in MWh over the years 2012-2017.
 }
 \keyword{datasets}

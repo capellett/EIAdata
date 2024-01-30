@@ -5,24 +5,31 @@
 \alias{plants}
 \title{plants}
 \format{
-A data frame with 45 variables:
+A dataframe with 80641 rows and 45 columns.
+}
+\usage{
+plants
+}
+\description{
+Annual entries for electric power generation plants in EIA form 860 over the years 2013-2020.
+
 \describe{
 \item{\code{Utility ID}, \code{Utility Name}}{Unique identification codes and names of the electricity utilities.}
 \item{\code{Plant Code}, \code{Plant Name}}{EIA-assigned plant code}
-\item{\code{County}},
+\item{\code{County}}{County Name},
 \item{\code{Latitude}, \code{Longitude}}{Physical location of each plant, including address and geographic coordinates.}
 \item{\code{NERC Region}}{North American Electric Reliability Corporation (NERC)region in which the plant operates}
 \item{\code{Balancing Authority Code}}{A 5-character code for the balancing authority managing supply, demand, and interchanges within an electrically defined area. May or may not be the same as the Owner of Transmission/Distribution Facilities.}
 \item{\code{Balancing Authority Name}}{Name of Balancing Authority}
 \item{\code{Name of Water Source}}{The name of the principal source from which cooling water or water for generating power for hydroelectric plants is obtained. If #'water is from an underground aquifer, provide name of aquifer, if known. If name of 'aquifer is not known,  “Wells.”  “Municipality” if the water is from a municipality.  “UNK” for planned facilities for which the water source is not known.  “NA” for
-   plants that do not use a water source for cooling or hydroelectric generation.}
+plants that do not use a water source for cooling or hydroelectric generation.}
 \item{\code{Primary Purpose (NAICS Code)}}{North American Industry Classification System (NAICS) code 'that best describes the primary purpose of the plant.Electric utility plants and
-    independent power producers whose primary purpose is generating electricity for sale will generally use code 22. For generators whose primary business is an industrial or
-   commercial process (e.g., paper mills, refineries, chemical plants, etc.) and for which generating electricity is a secondary purpose, use a code other than 22.}
+independent power producers whose primary purpose is generating electricity for sale will generally use code 22. For generators whose primary business is an industrial or
+commercial process (e.g., paper mills, refineries, chemical plants, etc.) and for which generating electricity is a secondary purpose, use a code other than 22.}
 \item{\code{Regulatory Status}}{Indicates whether the plant is regulated (RE) or non-regulated (NR) }
 \item{\code{Sector}}{Plant-level sector name, designated by the primary purpose, regulatory status and plant-level combined heat and power status.Options include Commercial, Electric Utility, Industrial, Non-CHP Independent Power Producer (IPP), CHP IPP.}
 \item{\code{Sector Name}}{Plant-level sector number, designated by the primary purpose, regulatory status and plant-level combined heat and power status, "1 = Electric Utility , 2 = Independent Power Producer, Non-Combined Heat and Power, 3 = Independent Power Producer, Combined Heat and Power, 4 = Commercial, Non-Combined Heat and Power,
-   5 = Commercial, Combined Heat and Power, 6 = Industrial, Non-Combined Heat and Power, 7 = Industrial, Combined Heat and Power" }
+5 = Commercial, Combined Heat and Power, 6 = Industrial, Non-Combined Heat and Power, 7 = Industrial, Combined Heat and Power" }
 \item{\code{Net Metering (for facilities with solar and wind generation)}}{desc}
 \item{\code{FERC Cogeneration Status}}{Indicates of whether the plant has FERC qualifying facility cogenerator status.Yes , No}
 \item{\code{FERC Cogeneration Docket Number}}{The docket number relating to the FERC qualifying facility cogenerator status}
@@ -50,11 +57,5 @@ A data frame with 45 variables:
 \item{\code{Natural Gas Storage}}{Indicates if the facility have on-site storage of natural gas}
 \item{\code{Liquified Natural Gas Storage}}{Indicates if the facility have the capability to store the natural gas in the form of liquefied natural gas}
 }
-}
-\usage{
-plants
-}
-\description{
-Annual entries for electric power generation plants in EIA form 860 over the years 2013-2020.
 }
 \keyword{datasets}
