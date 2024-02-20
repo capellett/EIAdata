@@ -97,29 +97,29 @@ PrimeMovers <- readxl::read_xlsx('data-raw\\Code Sheets_2017.xlsx', sheet=2)
 EnergySources <- readxl::read_xlsx('data-raw\\Code Sheets_2017.xlsx', sheet=1) %>%
   select(`Energy Source Code`, `Energy Source Description`)
 
-generators <- generators %>%
-  EIAdatasets::join_and_drop(., PrimeMovers, by='Prime Mover', rename='Prime Mover') %>%
-  EIAdatasets::join_and_drop(., EnergySources, by=c('Energy Source 1'='Energy Source Code'),
+generators2 <- generators %>%
+  EIAdata::join_and_drop(., PrimeMovers, by='Prime Mover', rename='Prime Mover') %>%
+  EIAdata::join_and_drop(., EnergySources, by=c('Energy Source 1'='Energy Source Code'),
                 rename=c("PrimaryFuelType", "PrimaryFuel")) %>%
-  EIAdatasets::join_and_drop(EnergySources, c('Energy Source 2'='Energy Source Code'),'Fuel2') %>%
-  EIAdatasets::join_and_drop(EnergySources, c('Energy Source 3'='Energy Source Code'),'Fuel3') %>%
-  EIAdatasets::join_and_drop(EnergySources, c('Energy Source 4'='Energy Source Code'),'Fuel4') %>%
-  EIAdatasets::join_and_drop(EnergySources, c('Energy Source 5'='Energy Source Code'),'Fuel5') %>%
-  EIAdatasets::join_and_drop(EnergySources, c('Energy Source 6'='Energy Source Code'),'Fuel6') %>%
-  EIAdatasets::join_and_drop(EnergySources, c('Startup Source 1'='Energy Source Code'),'Start1') %>%
-  EIAdatasets::join_and_drop(EnergySources, c('Startup Source 2'='Energy Source Code'),'Start2') %>%
-  EIAdatasets::join_and_drop(EnergySources, c('Startup Source 3'='Energy Source Code'),'Start3') %>%
-  EIAdatasets::join_and_drop(EnergySources, c('Startup Source 4'='Energy Source Code'),'Start4') %>%
-  EIAdatasets::monthyear_to_date('Month Uprate or Derate Completed', 'Year Uprate or Derate Completed',
+  EIAdata::join_and_drop(EnergySources, c('Energy Source 2'='Energy Source Code'),'Fuel2') %>%
+  EIAdata::join_and_drop(EnergySources, c('Energy Source 3'='Energy Source Code'),'Fuel3') %>%
+  EIAdata::join_and_drop(EnergySources, c('Energy Source 4'='Energy Source Code'),'Fuel4') %>%
+  EIAdata::join_and_drop(EnergySources, c('Energy Source 5'='Energy Source Code'),'Fuel5') %>%
+  EIAdata::join_and_drop(EnergySources, c('Energy Source 6'='Energy Source Code'),'Fuel6') %>%
+  EIAdata::join_and_drop(EnergySources, c('Startup Source 1'='Energy Source Code'),'Start1') %>%
+  EIAdata::join_and_drop(EnergySources, c('Startup Source 2'='Energy Source Code'),'Start2') %>%
+  EIAdata::join_and_drop(EnergySources, c('Startup Source 3'='Energy Source Code'),'Start3') %>%
+  EIAdata::join_and_drop(EnergySources, c('Startup Source 4'='Energy Source Code'),'Start4') %>%
+  EIAdata::monthyear_to_date('Month Uprate or Derate Completed', 'Year Uprate or Derate Completed',
                     'Date Uprate or Derate Completed') %>%
-  EIAdatasets::monthyear_to_date('Operating Month', 'Operating Year', 'Operating Date') %>%
-  EIAdatasets::monthyear_to_date('Planned Retirement Month', 'Planned Retirement Year', 'Planned Retirement Date') %>%
-  EIAdatasets::monthyear_to_date('Planned Uprate Month', 'Planned Uprate Year', 'Planned Uprate Date') %>%
-  EIAdatasets::monthyear_to_date('Planned Derate Month', 'Planned Derate Year', 'Planned Derate Date') %>%
-  EIAdatasets::monthyear_to_date('Planned Repower Month', 'Planned Repower Year', 'Planned Repower Date') %>%
-  EIAdatasets::monthyear_to_date('Other Modifications Month', 'Other Modifications Year', 'Planned Other Modifications Date') %>%
-  EIAdatasets::paste_columns(c('Start1', 'Start2', 'Start3', 'Start4'), 'StartupFuels') %>%
-  EIAdatasets::paste_columns(c('Fuel2', 'Fuel3', 'Fuel4', 'Fuel5', 'Fuel6'), 'SecondaryFuels')
+  EIAdata::monthyear_to_date('Operating Month', 'Operating Year', 'Operating Date') %>%
+  EIAdata::monthyear_to_date('Planned Retirement Month', 'Planned Retirement Year', 'Planned Retirement Date') %>%
+  EIAdata::monthyear_to_date('Planned Uprate Month', 'Planned Uprate Year', 'Planned Uprate Date') %>%
+  EIAdata::monthyear_to_date('Planned Derate Month', 'Planned Derate Year', 'Planned Derate Date') %>%
+  EIAdata::monthyear_to_date('Planned Repower Month', 'Planned Repower Year', 'Planned Repower Date') %>%
+  EIAdata::monthyear_to_date('Other Modifications Month', 'Other Modifications Year', 'Planned Other Modifications Date') %>%
+  EIAdata::paste_columns(c('Start1', 'Start2', 'Start3', 'Start4'), 'StartupFuels') %>%
+  EIAdata::paste_columns(c('Fuel2', 'Fuel3', 'Fuel4', 'Fuel5', 'Fuel6'), 'SecondaryFuels')
 
 usethis::use_data(generators, overwrite=T)
 
@@ -187,7 +187,7 @@ rm(cooling2012, cooling2013, cooling2014, cooling2015,
    cooling2016, cooling2017, cooling2018, cooling2019, cooling2020)
 
 cooling <- cooling %>%
-  EIAdatasets::monthyear_to_date(.) %>%
+  EIAdata::monthyear_to_date(.) %>%
   dplyr::mutate(dplyr::across(
     c("HoursInService", "IntakeAvgTemp (F)", "IntakeMaxTemp",
       "DischargeAvgTemp", "DischargeMaxTemp", "Chlorine (thousand lbs)",
@@ -215,7 +215,7 @@ rm(netGen2012, netGen2013, netGen2014, netGen2015,
    netGen2016, netGen2017, netGen2018, netGen2019, netGen2020)
 
 net_generation <- net_generation %>%
-  EIAdatasets::join_and_drop(
+  EIAdata::join_and_drop(
     ., PrimeMovers, by=c('PrimeMover'='Prime Mover'), rename='Prime Mover')
 
 usethis::use_data(net_generation, overwrite=T)
@@ -274,20 +274,20 @@ cooling_detail <-
   bind_rows()
 
 cooling_detail <- cooling_detail %>%
-  EIAdatasets::monthyear_to_date('Cooling Inservice Month', 'Cooling Inservice Year', 'Cooling Inservice Date') %>%
-  EIAdatasets::monthyear_to_date('Boiler Retirement Month', 'Boiler Retirement Year', 'Boiler Retirement Date') %>%
-  EIAdatasets::monthyear_to_date('Boiler Inservice Month', 'Boiler Inservice Year', 'Boiler Inservice Date') %>%
-  EIAdatasets::monthyear_to_date('Generator Retirement Month', 'Generator Retirement Year', 'Generator Retirement Date') %>%
-  EIAdatasets::monthyear_to_date('Generator Inservice Month', 'Generator Inservice Year', 'Generator Inservice Date') %>%
-  EIAdatasets::join_and_drop(PrimeMovers, c('Generator Prime Mover Code'='Prime Mover'), 'Prime Mover') %>%
-  EIAdatasets::join_and_drop(EnergySources, c('Generator Primary Energy Source Code'='Energy Source Code'),
+  EIAdata::monthyear_to_date('Cooling Inservice Month', 'Cooling Inservice Year', 'Cooling Inservice Date') %>%
+  EIAdata::monthyear_to_date('Boiler Retirement Month', 'Boiler Retirement Year', 'Boiler Retirement Date') %>%
+  EIAdata::monthyear_to_date('Boiler Inservice Month', 'Boiler Inservice Year', 'Boiler Inservice Date') %>%
+  EIAdata::monthyear_to_date('Generator Retirement Month', 'Generator Retirement Year', 'Generator Retirement Date') %>%
+  EIAdata::monthyear_to_date('Generator Inservice Month', 'Generator Inservice Year', 'Generator Inservice Date') %>%
+  EIAdata::join_and_drop(PrimeMovers, c('Generator Prime Mover Code'='Prime Mover'), 'Prime Mover') %>%
+  EIAdata::join_and_drop(EnergySources, c('Generator Primary Energy Source Code'='Energy Source Code'),
                 c("PrimaryFuelType", "PrimaryFuel")) %>%
   left_join(select(plants, 1:3, Latitude, Longitude, Year)) %>%
   left_join(select(generators, `Plant Code`, `Generator ID`, Year,
                    `Nameplate Capacity (MW)`, `Nameplate Power Factor`,
                    `Summer Capacity (MW)`, `Winter Capacity (MW)`,
                    `Minimum Load (MW)`)) %>%
-  EIAdatasets::monthyear_to_date(.)
+  EIAdata::monthyear_to_date(.)
 
 usethis::use_data(cooling_detail, overwrite=T)
 

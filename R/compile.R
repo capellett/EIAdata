@@ -16,6 +16,8 @@ monthyear_to_date <- function(df, monthcol='Month', yearcol='Year',
   df[, !(names(df) %in% c(monthcol, yearcol))]
 }
 
+
+
 # test <- monthyear_to_date(eia_generator, 'Operating Month', 'Operating Year', 'Operating Date')
 
 #' @export
@@ -53,3 +55,5 @@ paste_columns <- function(df, columns, new_col='new_col', collapse='; ') {
   df[, new_col] <- columns[,'new_col', drop=TRUE] %>% unlist()
   df
 }
+
+
