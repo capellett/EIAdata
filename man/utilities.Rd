@@ -3,9 +3,15 @@
 \docType{data}
 \name{utilities}
 \alias{utilities}
-\title{Utilities}
+\title{utilities}
 \format{
-A data frame with twelve variables:
+A dataframe with 37029 rows and 12 columns.
+}
+\usage{
+utilities
+}
+\description{
+Annual entries for electric utility information from EIA form 860 over the years 2013-2020.
 \describe{
   \item{\code{Utility ID}}{an integer value that identifies each utility}
   \item{\code{Utility Name}}{the name of the utility}
@@ -27,11 +33,5 @@ A data frame with twelve variables:
   \item{\code{Year}}{2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020}
 }
 For further details, see \url{http://www.ssa.gov/oact/NOTES/as120/LifeTables_Body.html#wp1168594}
-}
-\usage{
-utilities
-}
-\description{
-Annual entries for electric utility information from EIA form 860 over the years 2013-2020.
 }
 \keyword{datasets}

@@ -2,8 +2,31 @@
 % Please edit documentation in R/EIAdata-package.R
 \docType{package}
 \name{EIAdata}
+\alias{EIAdata-package}
 \alias{EIAdata}
 \title{Some EIA Data}
 \description{
 Some data from the United States Energy Information Administration.
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/capellett/EIAdata}
+  \item Report bugs at \url{https://github.com/capellett/EIAdata/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: C A Pellett \email{c.alex.pellett@gmail.com}
+
+Authors:
+\itemize{
+  \item Laljeet Sangha \email{lsangha@clemson.edu}
+}
+
+Other contributors:
+\itemize{
+  \item State of South Carolina Department of Natural Resources [funder]
+}
+
 }

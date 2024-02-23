@@ -3,34 +3,51 @@
 \docType{data}
 \name{cooling}
 \alias{cooling}
-\title{Cooling}
+\title{cooling}
 \format{
-A data frame with twenty two variables:
+A dataframe with 149285 rows and 21 columns.
+}
+\usage{
+cooling
+}
+\description{
+Monthly entries for cooling of electricity generation plants over the years 2012-2020. From EIA Form 923, Schedule 8.
 \describe{
 \item{\code{Year}}{}
 \item{\code{Month}}{}
 \item{\code{PlantID}}{EIA-assigned plant code}
 \item{\code{CoolingID}}{Cooling system identification number}
-\item{\code{CoolingType}}{DC Dry (air) cooling system
-(HRC) Hybrid: cooling pond(s) or canal(s) with dry cooling
-(HRF) Hybrid: forced draft cooling tower(s) with dry cooling
-(HRI) Hybrid: induced draft cooling tower(s) with dry cooling
-(OC) Once through with cooling pond(s)
-(ON) Once through without cooling pond(s)
-(RC) Recirculating with cooling pond(s) or canal(s)
-(RF) Recirculating with forced draft cooling tower(s)
-(RI) Recirculating with induced draft cooling tower(s)
-(RN) Recirculating with natural draft cooling tower(s)
-(HT) Helper Tower
-(OT) Other (specify in SCHEDULE 7)}
-
-\item{\code{CoolingStatus}}{Cooling system status: Type of cooling system [CN] Cancelled (previously reported as “planned”)
-(CO) New unit under construction, (OP) Operating (in commercial service or out of service less than 365 days)
-(OS) Out of service (365 days or longer), (PL) Planned (expected to go into commercial service within 10 years)
-(RE) Retired (no longer in service and not expected to be returned to service)
-(SB) Standby (or inactive reserve); i.e., not normally used, but available for service)
-(SC) Cold Standby (Reserve); deactivated (usually requires 3 to 6 months to reactivate)
-(TS) Operating under test conditions (not in commercial service)}
+\item{\code{CoolingType}}{Types of cooling systems:
+  \tabular{ll}{
+    Code \tab Description \cr
+    DC \tab Dry (air) cooling system \cr
+    HRC \tab Hybrid: cooling pond(s) or canal(s) with dry cooling \cr
+    HRF \tab Hybrid: forced draft cooling tower(s) with dry cooling \cr
+    HRI \tab Hybrid: induced draft cooling tower(s) with dry cooling \cr
+    OC \tab Once through with cooling pond(s) \cr
+    ON \tab Once through without cooling pond(s) \cr
+    RC \tab Recirculating with cooling pond(s) or canal(s) \cr
+    RF \tab Recirculating with forced draft cooling tower(s) \cr
+    RI \tab Recirculating with induced draft cooling tower(s) \cr
+    RN \tab Recirculating with natural draft cooling tower(s) \cr
+    HT \tab Helper Tower \cr
+    OT \tab Other (specify in SCHEDULE 7) \cr
+  }
+}
+\item{\code{CoolingStatus}}{Cooling system status:
+  \tabular{ll}{
+    Code \tab Description \cr
+    CN \tab Cancelled (previously reported as “planned”) \cr
+    CO \tab New unit under construction \cr
+    OP \tab Operating (in commercial service or out of service less than 365 days) \cr
+    OS \tab Out of service (365 days or longer) \cr
+    PL \tab Planned (expected to go into commercial service within 10 years) \cr
+    RE \tab Retired (no longer in service and not expected to be returned to service) \cr
+    SB \tab Standby (or inactive reserve); i.e., not normally used, but available for service \cr
+    SC \tab Cold Standby (Reserve); deactivated (usually requires 3 to 6 months to reactivate) \cr
+    TS \tab Operating under test conditions (not in commercial service) \cr
+  }
+}
 \item{\code{HoursInService}}{}
 \item{\code{Chlorine (thousand lbs)}}{}
 \item{\code{Diversion (gpm)}}{}
@@ -48,12 +65,5 @@ A data frame with twenty two variables:
 \item{\code{Discharge (MGal)}}{}
 \item{\code{Consumption (MGal)}}{}
 }
-}
-\usage{
-cooling
-}
-\description{
-Monthly entries for cooling of electricity generation plants over the years 2012-2020.
-From EIA Form 923, Schedule 8.
 }
 \keyword{datasets}
