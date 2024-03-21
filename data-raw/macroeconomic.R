@@ -232,7 +232,7 @@ usethis::use_data(AEO2020_dat, overwrite=T)
 usethis::use_data(AEO2021_dat, overwrite=T)
 usethis::use_data(AEO2023_dat, overwrite=T)
 
-
+EIAdata::AEO2023_dat
 
 #****************************************************************************************#
 #                                   Analyse data
