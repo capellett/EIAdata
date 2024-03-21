@@ -64,6 +64,9 @@ AEO2019_dat[, 3:ncol(AEO2019_dat)] <- lapply(AEO2019_dat[, 3:ncol(AEO2019_dat)],
 
 AEO2019_dat <- fn_round_numeric(AEO2019_dat)
 
+AEO2019_dat$Subsector <-NA
+
+AEO2019_dat <- AEO2019_dat[,c(1:2,12,3:11)]
 
 
 #****************************************************************************************#
@@ -81,6 +84,9 @@ AEO2020_dat[, 3:ncol(AEO2020_dat)] <- lapply(AEO2020_dat[, 3:ncol(AEO2020_dat)],
 
 # Apply the rounding function to each numeric column
 AEO2020_dat <- fn_round_numeric(AEO2020_dat)
+AEO2020_dat$Subsector <-NA
+
+AEO2020_dat <- AEO2020_dat[,c(1:2,ncol(AEO2020_dat),3:(ncol(AEO2020_dat)-1))]
 
 #****************************************************************************************#
 #                                   2021 data                                            #
@@ -94,10 +100,10 @@ AEO2021_dat <- fn_handle_colnames(AEO2021_dat)
 # Replace AEO2021_dat$Sector with AEO2021_dat$Subsector if it's non-NA, otherwise keep AEO2021_dat$Sector. This has to be added for 2021 and 2023
 AEO2021_dat$Sector <- ifelse(!is.na(AEO2021_dat$Subsector), AEO2021_dat$Subsector, AEO2021_dat$Sector)
 
-AEO2021_dat <- AEO2021_dat[,-c(3)]
+# AEO2021_dat <- AEO2021_dat[,-c(3)]
 
 # Convert columns from the 3rd to the last to numeric
-AEO2021_dat[, 3:ncol(AEO2021_dat)] <- lapply(AEO2021_dat[, 3:ncol(AEO2021_dat)], as.numeric)
+AEO2021_dat[, 4:ncol(AEO2021_dat)] <- lapply(AEO2021_dat[, 4:ncol(AEO2021_dat)], as.numeric)
 
 # Apply the rounding function to each numeric column
 AEO2021_dat <- fn_round_numeric(AEO2021_dat)
@@ -115,13 +121,14 @@ removed_cols <- AEO2023_dat[c(1,2,38),]
 AEO2023_dat <- AEO2023_dat[-c(1,2,38),]
 
 AEO2023_dat <- fn_handle_colnames(AEO2023_dat)
+
 # Replace AEO2021_dat$Sector with AEO2021_dat$Subsector if it's non-NA, otherwise keep AEO2021_dat$Sector
 AEO2023_dat$Sector <- ifelse(!is.na(AEO2023_dat$Subsector), AEO2023_dat$Subsector, AEO2023_dat$Sector)
 
-AEO2023_dat <- AEO2023_dat[,-c(3)]
+# AEO2023_dat <- AEO2023_dat[,-c(3)]
 
 # Convert columns from the 3rd to the last to numeric
-AEO2023_dat[, 3:ncol(AEO2023_dat)] <- lapply(AEO2023_dat[, 3:ncol(AEO2023_dat)], as.numeric)
+AEO2023_dat[, 4:ncol(AEO2023_dat)] <- lapply(AEO2023_dat[, 4:ncol(AEO2023_dat)], as.numeric)
 
 # Apply the rounding function to each numeric column
 AEO2023_dat <- fn_round_numeric(AEO2023_dat)
