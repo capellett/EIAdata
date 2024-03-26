@@ -7,32 +7,33 @@ library(tidyr)
 #                    Functions used in the script                                        #
 #****************************************************************************************#
 
-# Rename columns that are numeric years and remove parentheses
-fn_handle_colnames <- function(dat){
-  colnames(dat) <- sapply(colnames(dat), function(x) {
-    # Remove parentheses
-    x <- gsub("[()]", "", x)
-
-    # Rename numeric years
-    if (grepl("^[0-9]{4}\\.{0,1}[0-9]*$", x)) {
-      return(paste0("Y", substr(x, 1, 4)))
-    } else {
-      return(x)
-    }
-  })
-  return(dat)
-}
-
-# Apply the rounding function to each numeric column
-fn_round_numeric <- function(dat){
-
-  modified_dat <- as.data.frame(lapply(dat, function(x) {
-    if(is.numeric(x)) round(x, 2) else x
-  }))
-
-  return (modified_dat)
-
-}
+# # Rename columns that are numeric years and remove parentheses
+# fn_handle_colnames <- function(dat){
+#   colnames(dat) <- sapply(colnames(dat), function(x) {
+#     # Remove parentheses
+#     x <- gsub("[()]", "", x)
+#
+#     # Rename numeric years
+#     if (grepl("^[0-9]{4}\\.{0,1}[0-9]*$", x)) {
+#       return(paste0(substr(x, 1, 4)))
+#     } else {
+#       return(x)
+#     }
+#   })
+#   return(dat)
+# }
+#
+#
+# # Apply the rounding function to each numeric column
+# fn_round_numeric <- function(dat){
+#
+#   modified_dat <- as.data.frame(lapply(dat, function(x) {
+#     if(is.numeric(x)) round(x, 2) else x
+#   }))
+#
+#   return (modified_dat)
+#
+# }
 
 fn_last_colname <- function(dat) {
   colnames(dat)[ncol(dat)] <- "AGR"
@@ -95,20 +96,17 @@ AEO2020_dat <- AEO2020_dat[,c(1:2,ncol(AEO2020_dat),3:(ncol(AEO2020_dat)-1))]
 # Read the data, including the fourth row
 AEO2021_dat <- read_excel("data-raw/macroeconomic/year2021_Table_23_Industrial_Sector_Macroeconomic_Indicators.xlsx")
 
-AEO2021_dat <- fn_handle_colnames(AEO2021_dat)
 
 # Replace AEO2021_dat$Sector with AEO2021_dat$Subsector if it's non-NA, otherwise keep AEO2021_dat$Sector. This has to be added for 2021 and 2023
-AEO2021_dat$Sector <- ifelse(!is.na(AEO2021_dat$Subsector), AEO2021_dat$Subsector, AEO2021_dat$Sector)
+# AEO2021_dat$Subsector <- ifelse(!is.na(AEO2021_dat$Subsector), AEO2021_dat$Subsector, AEO2021_dat$Sector)
 
-# AEO2021_dat <- AEO2021_dat[,-c(3)]
+AEO2021_dat <- AEO2021_dat %>%
+  dplyr::mutate(across(4:ncol(.), ~ round(as.numeric(.), digits = 2)))
 
-# Convert columns from the 3rd to the last to numeric
-AEO2021_dat[, 4:ncol(AEO2021_dat)] <- lapply(AEO2021_dat[, 4:ncol(AEO2021_dat)], as.numeric)
-
-# Apply the rounding function to each numeric column
-AEO2021_dat <- fn_round_numeric(AEO2021_dat)
 
 AEO2021_dat$Type <- paste0(AEO2021_dat$Type, " Sector")
+
+
 #****************************************************************************************#
 #                                   2023 data                                            #
 #****************************************************************************************#
@@ -120,18 +118,13 @@ removed_cols <- AEO2023_dat[c(1,2,38),]
 
 AEO2023_dat <- AEO2023_dat[-c(1,2,38),]
 
-AEO2023_dat <- fn_handle_colnames(AEO2023_dat)
 
-# Replace AEO2021_dat$Sector with AEO2021_dat$Subsector if it's non-NA, otherwise keep AEO2021_dat$Sector
-AEO2023_dat$Sector <- ifelse(!is.na(AEO2023_dat$Subsector), AEO2023_dat$Subsector, AEO2023_dat$Sector)
+# AEO2023_dat$Subsector <- ifelse(!is.na(AEO2023_dat$Subsector), AEO2023_dat$Subsector, AEO2023_dat$Sector)
 
 # AEO2023_dat <- AEO2023_dat[,-c(3)]
 
-# Convert columns from the 3rd to the last to numeric
-AEO2023_dat[, 4:ncol(AEO2023_dat)] <- lapply(AEO2023_dat[, 4:ncol(AEO2023_dat)], as.numeric)
-
-# Apply the rounding function to each numeric column
-AEO2023_dat <- fn_round_numeric(AEO2023_dat)
+AEO2023_dat <- AEO2023_dat %>%
+  dplyr::mutate(across(4:ncol(.), ~ round(as.numeric(.), digits = 2)))
 
 
 #****************************************************************************************#
@@ -162,25 +155,27 @@ rm(list = setdiff(all_objects, keep_objects))
 #****************************************************************************************#
 #                                   Check the data reporting                             #
 #****************************************************************************************#
+dat1 <- AEO2021_dat
+dat2 <- AEO2022_dat
 
-fn_check_reporting <- function(dat1,dat2,dat3){
+
+fn_check_reporting <- function(dat1,dat2){
 
 # Extracting unique sectors
-unique_sectors_2020 <- unique(dat1$Sector)
-unique_sectors_2021 <- unique(dat2$Sector)
-unique_sectors_2023 <- unique(dat3$Sector)
+unique_sectors_2021 <- unique(dat1$Sector)
+unique_sectors_2023 <- unique(dat2$Sector)
+
 
 # Creating a master list of all unique sectors
-all_sectors <- unique(c(unique_sectors_2020, unique_sectors_2021, unique_sectors_2023))
+all_sectors <- unique(c(unique_sectors_2021, unique_sectors_2023))
 
 # Initializing the final data frame
 sector_comparison <- data.frame(Sector = all_sectors,
-                                In_2020 = "No",
                                 In_2021 = "No",
                                 In_2023 = "No")
 
 # Checking presence of each sector in each year
-sector_comparison$In_2020[sector_comparison$Sector %in% unique_sectors_2020] <- "Yes"
+
 sector_comparison$In_2021[sector_comparison$Sector %in% unique_sectors_2021] <- "Yes"
 sector_comparison$In_2023[sector_comparison$Sector %in% unique_sectors_2023] <- "Yes"
 
@@ -189,11 +184,11 @@ sector_comparison$In_2023[sector_comparison$Sector %in% unique_sectors_2023] <- 
 #                                   Plot                                                 #
 #****************************************************************************************#
 
-sector_comp_plot <- gather(sector_comparison, key = "Year", value = "Reported", In_2020, In_2021, In_2023)
+sector_comp_plot <- gather(sector_comparison, key = "Year", value = "Reported", In_2021, In_2023)
 
 # Adjusting Year values for x-axis labels
 sector_comp_plot$Year <- as.factor(sector_comp_plot$Year)
-levels(sector_comp_plot$Year) <- c("2020", "2021", "2023")  # Rename levels to display correct years
+levels(sector_comp_plot$Year) <- c("2021", "2023")  # Rename levels to display correct years
 
 # Choosing colorblind-friendly colors
 color_blind_friendly_colors <- c("Yes" = "#377eb8", "No" = "#e41a1c")  # Blue and Reddish
@@ -217,14 +212,14 @@ return(p)
 }
 
 
-fn_check_reporting (AEO2020_dat,AEO2021_dat,AEO2023_dat)
+fn_check_reporting (AEO2021_dat,AEO2023_dat)
 #******************************************************************************************************************#
 # From visualization, Sector Stone, Clay and Glass  Products was reported as Sector Stone, Clay and Glass in 2021  #
 #******************************************************************************************************************#
 
 AEO2021_dat$Sector[AEO2021_dat$Sector == "Stone, Clay, and Glass"] <- "Stone, Clay, and Glass Products"
 
-fn_check_reporting (AEO2020_dat,AEO2021_dat,AEO2023_dat)
+fn_check_reporting (AEO2021_dat,AEO2023_dat)
 
 
 usethis::use_data(AEO2019_dat, overwrite=T)
@@ -232,7 +227,7 @@ usethis::use_data(AEO2020_dat, overwrite=T)
 usethis::use_data(AEO2021_dat, overwrite=T)
 usethis::use_data(AEO2023_dat, overwrite=T)
 
-EIAdata::AEO2023_dat
+
 
 #****************************************************************************************#
 #                                   Analyse data
