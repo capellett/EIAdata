@@ -1,8 +1,6 @@
 
 df<- generators
 
-
-
 # Create a list to store unique values for each column
 unique_values_list <- list()
 

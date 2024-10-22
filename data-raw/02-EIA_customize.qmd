@@ -11,7 +11,7 @@ This report documents additional preparation of the EIA datasets for the purpose
 library(tidyverse)
 library(lubridate)
 library(zoo)
-library(EIAdatasets)
+
 ```
 
 
@@ -19,8 +19,12 @@ library(EIAdatasets)
 ```{r}
 ##### Reduce some more columns in the generators table
 ## test if modification dates can be gathered into date+type
-test_plans <- EIAdatasets::generators %>%
-  dplyr::filter(Year == 2020) %>%
+load("../data/generators.rda")
+```
+
+```{r}
+test_plans <- generators %>%
+  dplyr::filter(Year == max(Year)) %>%
   mutate(RetDate = !is.na(`Planned Retirement Date`),
          UpDate = !is.na(`Planned Uprate Date`),
          DeDate = !is.na(`Planned Derate Date`),

@@ -1,0 +1,155 @@
+
+
+## Compile the macroeconomic projections
+
+```{r}
+
+macro2019 <- readxl::read_excel(
+  "downloaded excel spreadsheets/macroeconomic/year2019_Industrial_Sector_Macroeconomic_Indicators_edit.xlsx", 
+    sheet = "Industrial_Sector_Macroeconomic") |>
+  dplyr::select(Type, Sector, Subsector, `2016`:`2050`, AGR = `Growth (2017-2050)`)
+## 2009 dollars
+
+macro2020 <- readxl::read_excel("downloaded excel spreadsheets/macroeconomic/year2020_AEO 2020 suptab_23_edit.xlsx", 
+    sheet = "formatted")
+## 2012 dollars
+
+## Vintage years 2021 and 2022 are named wrong and in the same workbook.
+macro2021 <- readxl::read_excel("downloaded excel spreadsheets/macroeconomic/year2021_Table_23_Industrial_Sector_Macroeconomic_Indicators.xlsx", 
+    sheet = "Formatted_2020") |>
+  dplyr::filter(!is.na(Sector))
+## 2012 dollars
+
+macro2022 <- readxl::read_excel("downloaded excel spreadsheets/macroeconomic/year2021_Table_23_Industrial_Sector_Macroeconomic_Indicators.xlsx", 
+    sheet = "Formatted_2021") |>
+  dplyr::filter(!is.na(Sector)) |>
+  dplyr::rename(AGR = `Growth (2021-2050)`)
+## 2012 dollars
+
+macro2023 <- readxl::read_excel("downloaded excel spreadsheets/macroeconomic/year2023_Table_23._Industrial_Sector_Macroeconomic_Indicators.xlsx", 
+    sheet = "formatted") |>
+  dplyr::rename(AGR = `Growth (2022-2050)`) |>
+  dplyr::filter(!is.na(Sector) & !is.na(Type))
+## 2012 dollars
+```
+
+
+```{r}
+## each table has one year of data, and the rest of the years are projected values.
+data_years <- tibble::tribble(
+  ~Vintage, ~Year,
+  '2019', 2016,
+  '2020', 2019,
+  '2021', 2020,
+  '2022', 2021,
+  '2023', 2022) |>
+  dplyr::mutate(Value_type = 'Data')
+
+```
+
+
+```{r}
+## combine the tables
+macro0 <- dplyr::bind_rows(
+  `2019`= macro2019,
+  `2020` = macro2020,
+  `2021` = macro2021,
+  `2022` = macro2022,
+  `2023` = macro2023,
+  .id = 'Vintage') |>
+  dplyr::select(Vintage, Type, Sector, Subsector, AGR, dplyr::everything()) |>
+  tidyr::pivot_longer(cols=`2016`:`2049`, names_to = 'Year', values_to = 'Value')
+
+## check the names
+names(macro0)
+
+## correct the 2019 vintage (2009 dollars) to 2012. 
+## https://data.bls.gov/cgi-bin/cpicalc.pl?cost1=1&year1=200901&year2=201201
+## 1 dollar in Jan 2009 has the buying power of 1.07 in Jan 2012
+## 1 dollar in Jan 2012 has the buying power of 1.36 in Jan 2024
+macro1 <- macro0 |>
+  dplyr::mutate(
+    Value = dplyr::if_else(Vintage == '2009', Value*1.07, Value)) |>
+  dplyr::mutate(Value = Value*1.36,
+                Year = as.integer(Year)) |>
+  dplyr::left_join(data_years) |>
+  dplyr::mutate(
+    Value_type = dplyr::if_else(is.na(Value_type), 'Projection', Value_type),
+    Sector = dplyr::if_else(Sector == 'Stone, Clay, and Glass Products',
+                            'Stone, Clay, and Glass', Sector))
+
+rm(macro2019, macro2020, macro2021, macro2022, macro2023, data_years)
+```
+
+
+```{r}
+## Clean it up a bit...
+
+macro1 |>
+  dplyr::select(Sector, Subsector) |>
+  unique() |>
+  dplyr::arrange(Sector, Subsector)
+## 35 groups.
+
+unique(macro1$Vintage)
+## 5 vintages (6 if I download 2024 data).
+
+## I only need manufacturing
+unique(macro1$Type)
+
+macro2 <- macro1 |>
+  dplyr::filter(Type %in% c('Manufacturing Sector', 'Manufacturing')) |>
+  dplyr::select(-Type)
+
+macro2 |>
+  dplyr::select(Sector, Subsector) |>
+  unique() |>
+  dplyr::arrange(Sector, Subsector)
+## 32 groups.
+
+macro3 <- macro2 |>
+  dplyr::mutate(Sector2 = dplyr::if_else(is.na(Subsector), Sector, 
+                                         paste0(Sector, '- ', Subsector)))
+
+## Make the data from the different vintages in to a "vintage" of its own.
+macro_data <- macro3 |>
+  dplyr::filter(Value_type == 'Data') |>
+  dplyr::mutate(Vintage = 'Data')
+
+macro4 <- dplyr::bind_rows(macro3, macro_data) |>
+  dplyr::select(-Value_type)
+```
+
+Make a plot that shows the variation in long term growth projections among the different sectors, and over time. This might require several plots.
+
+```{r}
+macro_proj <- macro4 |>
+  dplyr::filter(Vintage != 'Data') # |>
+  # dplyr::mutate(Vintage = as.integer(Vintage))
+
+macro_data <- macro4 |>
+  dplyr::filter(Vintage == 'Data')
+```
+
+```{r}
+macro_plot <- ggplot2::ggplot(
+    mapping = ggplot2::aes(x=Year, y=Value, group=Vintage)) +
+  ggplot2::geom_line(
+    data=macro_proj, alpha=0.5,
+    mapping=ggplot2::aes(color=Vintage)) +
+  ggplot2::geom_line(data=macro_data, color='black') +
+  ggplot2::facet_wrap('Sector2', ncol=4, scales='free_y') +
+  ggplot2::theme_bw() +
+  ggplot2::scale_y_continuous(
+    name = 'Value of Shipments (billion 2024 dollars)',
+    limits = c(0,NA)) +
+  ggplot2::scale_color_viridis_d(direction=-1)
+
+ggplot2::ggsave(
+  filename = 'macroeconomic_projection_plot.png', 
+  plot = macro_plot, 
+  width = 12, height = 6)
+```
+
+
+Show the relative water withdrawals in SC for each sector(?)

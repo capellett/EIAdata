@@ -1,13 +1,23 @@
-## This script creates the following .rds files:
-## utilities, plants, generators, cooling, net_generation, and cooling_detail
 
-## This script will read in data from EIA forms 860 and 923
-## To run it, you need to download the forms and unzip them...
 
+
+
+This script creates the following .rds files:
+utilities, plants, generators, cooling, net_generation, and cooling_detail
+
+This script will read in data from EIA forms 860 and 923
+To run it, you need to download the forms and unzip them.
+
+```{r}
 library(readxl)
 library(tidyverse)
 library(lubridate)
 library(zoo)
+```
+
+## Electric Utilities
+
+```{r}
 ############# FORM 860
 ## 2001 - 2003 : in .dbf format
 
@@ -37,37 +47,57 @@ library(zoo)
 
 ## TODO: for the most recent year, look at the worksheet named 'Proposed'.
 
-for(i in 2013:2022) {
-  folder <- paste0('data-raw\\downloaded excel spreadsheets\\form 860\\eia860', i, '\\')
+readxl::read_excel("downloaded excel spreadsheets/form 860/eia8602013/1___Utility_Y2013.xlsx")
+```
 
-  utility <- read_xlsx(paste0(folder, '1___Utility_Y', i,'.xlsx'),
+```{r}
+## This for look will read in tables (utlity, plant, and generator) for each year
+for(i in 2013:2022) {
+  folder <- paste0('downloaded excel spreadsheets/form 860/eia860', i, '/')
+
+  utility <- readxl::read_xlsx(paste0(folder, '1___Utility_Y', i,'.xlsx'),
                        sheet=1, skip=1)
   utility$Year <- i
   assign(paste0('utility', i), utility)
 
-  plant <- read_xlsx(paste0(folder, '2___Plant_Y', i, '.xlsx'),
+  plant <- readxl::read_xlsx(paste0(folder, '2___Plant_Y', i, '.xlsx'),
                      sheet=1, skip=1, guess_max=5000)
   plant$Year <- i
   assign(paste0('plant', i), plant)
 
-  generator <- read_xlsx(paste0(folder, '3_1_Generator_Y', i, '.xlsx'),
+  generator <- readxl::read_xlsx(paste0(folder, '3_1_Generator_Y', i, '.xlsx'),
                          sheet=1, skip=1, guess_max=10000)
   generator$Year <- i
   assign(paste0('generator', i), generator)
 
   rm(utility, plant, generator, folder, i)
 }
+```
 
+```{r}
 names(utility2013) <- names(utility2016)
 names(utility2014) <- names(utility2016)
 names(utility2015) <- names(utility2016)
 utility2017 <- select(utility2017, -Caution)
+```
+
+```{r}
 utilities <- bind_rows(
   utility2013, utility2014, utility2015, utility2016, utility2017, utility2018,
   utility2019, utility2020, utility2021,utility2022)
+
+usethis::use_data(utilities, overwrite=T)
+```
+
+```{r}
 rm(utility2013, utility2014, utility2015, utility2016, utility2017, utility2018,
    utility2019, utility2020,utility2021,utility2022)
+```
 
+
+## Power Plants
+
+```{r}
 plant2017 <- select(plant2017, -Caution)
 plants <- bind_rows(
   plant2013, plant2014, plant2015, plant2016,
@@ -76,6 +106,11 @@ plants <- bind_rows(
 rm(plant2013, plant2014, plant2015, plant2016,
    plant2017, plant2018, plant2019, plant2020, plant2021, plant2022)
 
+usethis::use_data(plants, overwrite=T)
+```
+
+## Electricity Generators
+```{r}
 generator2017 <- select(generator2017, -Caution)
 generators <- bind_rows(
   generator2013, generator2014, generator2015, generator2016,
@@ -83,20 +118,21 @@ generators <- bind_rows(
 
 rm(generator2013, generator2014, generator2015, generator2016,
    generator2017, generator2018, generator2019, generator2020, generator2021, generator2022)
+```
 
-usethis::use_data(utilities, overwrite=T)
-usethis::use_data(plants, overwrite=T)
+Consolidate and decode some of the columns in the Generators table
+Decode prime movers
+Decode energy sources
+Reduce Date Columns
+Reduce fuel columns
 
-
-## Consolidate and decode some of the columns in the Generators table
-### Decode prime movers
-### Decode energy sources
-### Reduce Date Columns
-### Reduce fuel columns
-PrimeMovers <- readxl::read_xlsx('data-raw\\Code Sheets_2017.xlsx', sheet=2)
-EnergySources <- readxl::read_xlsx('data-raw\\Code Sheets_2017.xlsx', sheet=1) %>%
+```{r}
+PrimeMovers <- readxl::read_xlsx('Code Sheets_2017.xlsx', sheet=2)
+EnergySources <- readxl::read_xlsx('Code Sheets_2017.xlsx', sheet=1) %>%
   select(`Energy Source Code`, `Energy Source Description`)
+```
 
+```{r}
 generators2 <- generators %>%
   EIAdata::join_and_drop(., PrimeMovers, by='Prime Mover', rename='Prime Mover') %>%
   EIAdata::join_and_drop(., EnergySources, by=c('Energy Source 1'='Energy Source Code'),
@@ -120,8 +156,10 @@ generators2 <- generators %>%
   EIAdata::monthyear_to_date('Other Modifications Month', 'Other Modifications Year', 'Planned Other Modifications Date') %>%
   EIAdata::paste_columns(c('Start1', 'Start2', 'Start3', 'Start4'), 'StartupFuels') %>%
   EIAdata::paste_columns(c('Fuel2', 'Fuel3', 'Fuel4', 'Fuel5', 'Fuel6'), 'SecondaryFuels')
+```
 
-usethis::use_data(generators, overwrite=T)
+```{r}
+usethis::use_data(generators2, overwrite=T)
 
 # for(i in 2013:2016) {
 #   folder <- paste0('form 860\\eia860', i, '\\')
@@ -147,7 +185,9 @@ usethis::use_data(generators, overwrite=T)
 #   EnviroEquip2013, EnviroEquip2014, EnviroEquip2015, EnviroEquip2016)
 # rm(EnviroEquip2013, EnviroEquip2014, EnviroEquip2015, EnviroEquip2016)
 
+```
 
+```{r}
 ######### form 923.
 ## It has a lot of pages/'schedules'/sheets in the yearly workbooks
 ## I compiled the two sheets I thought were relevant from each year into two workbooks.
