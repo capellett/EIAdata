@@ -120,6 +120,12 @@ macro4 <- dplyr::bind_rows(macro3, macro_data) |>
   dplyr::select(-Value_type)
 ```
 
+```{r}
+macroeconomic_projections <- macro4
+
+usethis::use_data(macroeconomic_projections, overwrite=T)
+```
+
 Make a plot that shows the variation in long term growth projections among the different sectors, and over time. This might require several plots.
 
 ```{r}
