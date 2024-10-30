@@ -52,7 +52,7 @@ readxl::read_excel("downloaded excel spreadsheets/form 860/eia8602013/1___Utilit
 
 ```{r}
 ## This for look will read in tables (utlity, plant, and generator) for each year
-for(i in 2013:2022) {
+for(i in 2013:2023) {
   folder <- paste0('downloaded excel spreadsheets/form 860/eia860', i, '/')
 
   utility <- readxl::read_xlsx(paste0(folder, '1___Utility_Y', i,'.xlsx'),
@@ -79,19 +79,21 @@ names(utility2013) <- names(utility2016)
 names(utility2014) <- names(utility2016)
 names(utility2015) <- names(utility2016)
 utility2017 <- select(utility2017, -Caution)
+
+utility2023 <- dplyr::mutate(utility2023, Zip = as.character(Zip))
 ```
 
 ```{r}
 utilities <- bind_rows(
   utility2013, utility2014, utility2015, utility2016, utility2017, utility2018,
-  utility2019, utility2020, utility2021,utility2022)
+  utility2019, utility2020, utility2021, utility2022, utility2023)
 
 usethis::use_data(utilities, overwrite=T)
 ```
 
 ```{r}
 rm(utility2013, utility2014, utility2015, utility2016, utility2017, utility2018,
-   utility2019, utility2020,utility2021,utility2022)
+   utility2019, utility2020,utility2021,utility2022, utility2023)
 ```
 
 
@@ -101,10 +103,12 @@ rm(utility2013, utility2014, utility2015, utility2016, utility2017, utility2018,
 plant2017 <- select(plant2017, -Caution)
 plants <- bind_rows(
   plant2013, plant2014, plant2015, plant2016,
-  plant2017, plant2018, plant2019, plant2020, plant2021, plant2022)
+  plant2017, plant2018, plant2019, plant2020, plant2021, plant2022, plant2023)
+```
 
+```{r}
 rm(plant2013, plant2014, plant2015, plant2016,
-   plant2017, plant2018, plant2019, plant2020, plant2021, plant2022)
+   plant2017, plant2018, plant2019, plant2020, plant2021, plant2022, plant2023)
 
 usethis::use_data(plants, overwrite=T)
 ```
@@ -112,12 +116,17 @@ usethis::use_data(plants, overwrite=T)
 ## Electricity Generators
 ```{r}
 generator2017 <- select(generator2017, -Caution)
-generators <- bind_rows(
-  generator2013, generator2014, generator2015, generator2016,
-  generator2017, generator2018, generator2019, generator2020, generator2021, generator2022)
 
-rm(generator2013, generator2014, generator2015, generator2016,
-   generator2017, generator2018, generator2019, generator2020, generator2021, generator2022)
+generators0 <- bind_rows(
+  generator2013, generator2014, generator2015, generator2016, generator2017, 
+  generator2018, generator2019, generator2020, generator2021, generator2022, 
+  generator2023)
+```
+
+```{r}
+rm(generator2013, generator2014, generator2015, generator2016, generator2017, 
+   generator2018, generator2019, generator2020, generator2021, generator2022,
+   generator2023)
 ```
 
 Consolidate and decode some of the columns in the Generators table
@@ -133,7 +142,7 @@ EnergySources <- readxl::read_xlsx('Code Sheets_2017.xlsx', sheet=1) %>%
 ```
 
 ```{r}
-generators2 <- generators %>%
+generators <- generators0 %>%
   EIAdata::join_and_drop(., PrimeMovers, by='Prime Mover', rename='Prime Mover') %>%
   EIAdata::join_and_drop(., EnergySources, by=c('Energy Source 1'='Energy Source Code'),
                 rename=c("PrimaryFuelType", "PrimaryFuel")) %>%
@@ -159,7 +168,8 @@ generators2 <- generators %>%
 ```
 
 ```{r}
-usethis::use_data(generators2, overwrite=T)
+
+usethis::use_data(generators, overwrite=T)
 
 # for(i in 2013:2016) {
 #   folder <- paste0('form 860\\eia860', i, '\\')
@@ -193,11 +203,11 @@ usethis::use_data(generators2, overwrite=T)
 ## I compiled the two sheets I thought were relevant from each year into two workbooks.
 ## (manually). So, could be good to write a function to read in all the sheets...
 
-
+## havent done this for 2023 data yet. got an error when I run this chunk.
 
 for(i in  2012:2022) {
   netGen <- read_xlsx(
-    'data-raw\\downloaded excel spreadsheets\\f923_Page4_Generators.xlsx',
+    'downloaded excel spreadsheets\\f923_Page4_Generators.xlsx',
     sheet=as.character(i), skip=5, guess_max=10000)
   names(netGen) <- c(
     'PlantID', 'Combined Heat and Power', 'Plant', 'Operator', 'OperatorID',
@@ -207,7 +217,7 @@ for(i in  2012:2022) {
   assign(paste0('netGen', i), netGen)
 
   cooling <- read_xlsx(
-    'data-raw\\downloaded excel spreadsheets\\f923_Schedule8_Cooling.xlsx',
+    'downloaded excel spreadsheets\\f923_Schedule8_Cooling.xlsx',
     sheet=as.character(i), skip=4, guess_max=10000)
   names(cooling) <- c(
     'Year', 'Month', 'PlantID', 'CoolingID', 'CoolingType', 'CoolingStatus', 'HoursInService',
@@ -219,7 +229,9 @@ for(i in  2012:2022) {
 
   rm(netGen, cooling, i)
 }
+```
 
+```{r}
 ## f923_Schedule8_Cooling
 ## I'm not sure I need this, use cooling_detail instead ?
 cooling2019 <- dplyr::mutate(cooling2019, HoursInService = as.character(HoursInService))
@@ -238,10 +250,13 @@ cooling <- cooling %>%
     function (x) as.numeric(dplyr::na_if(x, '.'))))
 
 usethis::use_data(cooling, overwrite=T)
+```
 
+# Net Generation
+From Form 923, Page 4, "Generators."
+
+```{r}
 ### f923_Page4_Generators
-
-
 years <- c("2020", "2021", "2022")
 
 # Create an empty list to store the data frames
@@ -274,30 +289,33 @@ netGen2022 <- netGen_list[["2022"]]
 #   'data-raw\\downloaded excel spreadsheets\\f923_Page4_Generators.xlsx',
 #   sheet="2020", skip=5, guess_max=10000)
 #
-#
-#
 # names(netGen2020) <- c(
 #   'PlantID', 'Combined Heat and Power', 'Plant', 'Operator', 'OperatorID',
 #   'State', 'CensusRegion', 'NERCRegion', 'NAICS', 'SectorNumber', 'Sector',
 #   'GeneratorID', 'PrimeMover', 'Respondent Frequency', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
 #   'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'YearToDate', 'BalancingAuthorityCode', 'Year')
+```
 
-
+```{r}
 net_generation <- bind_rows(
   netGen2012, netGen2013, netGen2014, netGen2015,
   netGen2016, netGen2017, netGen2018, netGen2019, netGen2020, netGen2021, netGen2022)
 
-rm(netGen2012, netGen2013, netGen2014, netGen2015,
-   netGen2016, netGen2017, netGen2018, netGen2019, netGen2020, netGen2021, netGen2022)
-
 net_generation <- net_generation %>%
   EIAdata::join_and_drop(
     ., PrimeMovers, by=c('PrimeMover'='Prime Mover'), rename='Prime Mover')
+```
 
+```{r}
 usethis::use_data(net_generation, overwrite=T)
 
+rm(netGen2012, netGen2013, netGen2014, netGen2015,
+   netGen2016, netGen2017, netGen2018, netGen2019, netGen2020, netGen2021, netGen2022)
+```
 
-###### COOLING DETAIL
+# Cooling Detail
+```{r}
+
 ## I downloaded these sheets from https://www.eia.gov/electricity/data/water/
 ## and compiled them in to a single workbook (it is too big, probably should have kept them separate)
 ## and deleted some whitespace in the title of the first column heading ('Utility ID')
@@ -352,9 +370,10 @@ cj22 <- readxl::read_xlsx(
   skip=2, guess_max=10000) %>%
   dplyr::mutate(Year=as.numeric(Year), Month=as.numeric(Month))
 
+```
 
-
-cooling_detail <-
+```{r}
+cooling_detail0 <-
   list(cj22,cj21,cj20, cj19, cj18, cj17, cj16, cj15, cj14) %>%
   lapply(
     FUN= function(x) {
@@ -362,7 +381,7 @@ cooling_detail <-
       dplyr::select(x, -`...59`, -`...60`)}) %>%
   bind_rows()
 
-cooling_detail <- cooling_detail %>%
+cooling_detail <- cooling_detail0 %>%
   EIAdata::monthyear_to_date('Cooling Inservice Month', 'Cooling Inservice Year', 'Cooling Inservice Date') %>%
   EIAdata::monthyear_to_date('Boiler Retirement Month', 'Boiler Retirement Year', 'Boiler Retirement Date') %>%
   EIAdata::monthyear_to_date('Boiler Inservice Month', 'Boiler Inservice Year', 'Boiler Inservice Date') %>%
@@ -378,7 +397,16 @@ cooling_detail <- cooling_detail %>%
                    `Minimum Load (MW)`)) %>%
   EIAdata::monthyear_to_date(.)
 
+```
+
+```{r}
 usethis::use_data(cooling_detail, overwrite=T)
+
+```
+
+```{r}
+
+```
 
 
 

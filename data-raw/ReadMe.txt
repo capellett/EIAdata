@@ -16,3 +16,8 @@ Alex Pellett
 It looks like I updated 2017 and 2018 data back in April 6, 2020 (860, 923, and cooling detail). Today I've downloaded 2019 and 2020 data for forms 860, 923, and cooling detail.
 
 CAPellett 11-12-2021
+
+Dr. Laljeet Sangha downloaded updates for 2022, and I've now downloaded most of the tables for 2023. Cooling detail is supposed to be released in November 2024.
+CAP 10-30-2024
+
+
